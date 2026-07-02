@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>My Orders | Coza Store</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/linearicons-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<style>
+		.orders-page {
+			background: #f7f7f7;
+		}
+
+		.orders-shell {
+			margin: 0 auto;
+			max-width: 900px;
+			padding: 75px 20px 85px;
+		}
+
+		.order-card {
+			background: #fff;
+			border: 1px solid #e6e6e6;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+			margin-bottom: 20px;
+			padding: 25px;
+		}
+
+		.order-card-head,
+		.order-card-body,
+		.order-actions {
+			align-items: center;
+			display: flex;
+		}
+
+		.order-card-head,
+		.order-card-body {
+			justify-content: space-between;
+		}
+
+		.order-card-head {
+			border-bottom: 1px solid #eee;
+			margin-bottom: 15px;
+			padding-bottom: 15px;
+		}
+
+		.order-number {
+			color: #222;
+			display: block;
+			font-family: Poppins-Medium;
+			font-size: 16px;
+		}
+
+		.order-date,
+		.order-items {
+			color: #888;
+			font-family: Poppins-Regular;
+			font-size: 13px;
+		}
+
+		.order-items {
+			color: #555;
+			font-size: 14px;
+			margin: 0;
+		}
+
+		.order-total {
+			color: #222;
+			font-family: Poppins-Medium;
+			font-size: 18px;
+		}
+
+		.order-status {
+			border-radius: 20px;
+			font-family: Poppins-Bold;
+			font-size: 11px;
+			padding: 6px 16px;
+			text-transform: uppercase;
+		}
+
+		.order-status-pending {
+			background: #fff3cd;
+			color: #856404;
+		}
+
+		.order-status-paid {
+			background: #d4edda;
+			color: #155724;
+		}
+
+		.order-actions {
+			gap: 10px;
+			margin-top: 20px;
+		}
+
+		.order-action-primary,
+		.order-action-secondary {
+			border: 0;
+			border-radius: 25px;
+			cursor: pointer;
+			font-family: Poppins-SemiBold;
+			font-size: 12px;
+			padding: 12px 30px;
+			text-transform: uppercase;
+			transition: all 0.3s;
+		}
+
+		.order-action-primary {
+			background: #222;
+			color: #fff;
+		}
+
+		.order-action-primary:hover {
+			background: #717fe0;
+		}
+
+		.order-action-secondary {
+			background: #f7f7f7;
+			color: #333;
+		}
+
+		.order-action-secondary:hover {
+			background: #e6e6e6;
+		}
+
+		#orderModal,
+		#paynowModal {
+			z-index: 2200;
+		}
+
+		.modal-backdrop {
+			z-index: 2100;
+		}
+
+		.order-modal-dialog {
+			margin: 90px auto 30px;
+			max-width: 620px;
+		}
+
+		.order-modal-content {
+			border: 0;
+			border-radius: 8px;
+			box-shadow: 0 12px 45px rgba(0, 0, 0, 0.18);
+			overflow: hidden;
+		}
+
+		.order-modal-header {
+			align-items: center;
+			background: #222;
+			border-bottom: 0;
+			color: #fff;
+			padding: 18px 24px;
+		}
+
+		.order-modal-header .modal-title {
+			color: #fff;
+			font-family: Poppins-Medium;
+			font-size: 18px;
+		}
+
+		.order-modal-header .close {
+			color: #fff;
+			opacity: 0.85;
+			text-shadow: none;
+		}
+
+		.order-modal-header .close:hover {
+			opacity: 1;
+		}
+
+		.order-modal-body {
+			padding: 22px 24px 24px;
+		}
+
+		.order-modal-table {
+			margin-bottom: 18px;
+		}
+
+		.order-modal-table th {
+			border-top: 0;
+			color: #222;
+			font-family: Poppins-Medium;
+			font-size: 13px;
+			text-transform: uppercase;
+		}
+
+		.order-modal-table td {
+			color: #555;
+			font-family: Poppins-Regular;
+			font-size: 14px;
+			vertical-align: middle;
+		}
+
+		.paynow-panel {
+			background: #f7f7f7;
+			border: 1px solid #eee;
+			border-radius: 8px;
+			padding: 14px 16px;
+		}
+
+		.paynow-brand {
+			color: #222;
+			display: block;
+			font-family: Poppins-Medium;
+			font-size: 15px;
+			margin-bottom: 4px;
+		}
+
+		.paynow-copy {
+			color: #666;
+			font-family: Poppins-Regular;
+			font-size: 13px;
+			line-height: 1.6;
+			margin: 0;
+		}
+
+		.paynow-input-label {
+			color: #222;
+			display: block;
+			font-family: Poppins-Medium;
+			font-size: 13px;
+			margin: 18px 0 8px;
+		}
+
+		.paynow-input {
+			border: 1px solid #e6e6e6;
+			border-radius: 4px;
+			color: #333;
+			font-family: Poppins-Regular;
+			font-size: 14px;
+			height: 46px;
+			padding: 0 14px;
+			width: 100%;
+		}
+
+		.paynow-input:focus {
+			border-color: #717fe0;
+			outline: 0;
+		}
+
+		.paynow-submit {
+			background: #222;
+			border: 0;
+			border-radius: 25px;
+			color: #fff;
+			cursor: pointer;
+			font-family: Poppins-SemiBold;
+			font-size: 12px;
+			margin-top: 20px;
+			padding: 12px 30px;
+			text-transform: uppercase;
+			transition: all 0.3s;
+			width: 100%;
+		}
+
+		.paynow-submit:hover {
+			background: #717fe0;
+		}
+
+		.order-modal-total {
+			border-top: 2px solid #eee;
+			font-family: Poppins-Medium;
+			font-size: 18px;
+			padding-top: 10px;
+			text-align: right;
+		}
+
+		@media (max-width: 575px) {
+			.order-card-head,
+			.order-card-body,
+			.order-actions {
+				align-items: flex-start;
+				flex-direction: column;
+			}
+
+			.order-modal-dialog {
+				margin: 75px 15px 20px;
+			}
+		}
+
+		.account-menu {
+			align-items: center;
+			display: inline-flex;
+			position: relative;
+		}
+
+		.account-trigger {
+			background: transparent;
+			border: 0;
+			cursor: pointer;
+		}
+
+		.account-dropdown {
+			background: #fff;
+			border: 1px solid #e6e6e6;
+			border-radius: 6px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+			min-width: 150px;
+			opacity: 0;
+			padding: 8px;
+			position: absolute;
+			right: 0;
+			top: calc(100% + 10px);
+			transform: translateY(6px);
+			transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+			visibility: hidden;
+			z-index: 1200;
+		}
+
+		.account-menu:hover .account-dropdown,
+		.account-menu:focus-within .account-dropdown {
+			opacity: 1;
+			transform: translateY(0);
+			visibility: visible;
+		}
+
+		.account-dropdown a,
+		.account-dropdown span {
+			color: #333;
+			display: block;
+			font-size: 13px;
+			line-height: 1.3;
+			padding: 8px 10px;
+			white-space: nowrap;
+		}
+
+		.account-dropdown a:hover {
+			color: #717fe0;
+		}
+
+		.account-name {
+			border-bottom: 1px solid #eee;
+			color: #888;
+			margin-bottom: 4px;
+		}
+	</style>
+<!--===============================================================================================-->
+</head>
+<body class="animsition orders-page">
+	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
+
+	<!-- Header -->
+	<header class="header-v4">
+		<div class="container-menu-desktop">
+			<div class="top-bar">
+				<div class="content-topbar flex-sb-m h-full container">
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m trans-04 p-lr-25">Help & FAQs</a>
+						<a href="#" class="flex-c-m trans-04 p-lr-25">My Account</a>
+						<a href="#" class="flex-c-m trans-04 p-lr-25">EN</a>
+						<a href="#" class="flex-c-m trans-04 p-lr-25">USD</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="wrap-menu-desktop how-shadow1">
+				<nav class="limiter-menu-desktop container">
+					<a href="/home" class="logo">
+						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+					</a>
+
+					<div class="menu-desktop">
+						<ul class="main-menu">
+							<li><a href="/home">Home</a></li>
+							<li><a href="/products">Shop</a></li>
+							<li><a href="/shopping-cart">Cart</a></li>
+							<li class="active-menu"><a href="/orders2">Orders</a></li>
+							<li><a href="/contact">Contact</a></li>
+						</ul>
+					</div>
+
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="0">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</div>
+
+						<div class="account-menu">
+							<button type="button" class="account-trigger icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" aria-label="Account menu">
+								<i class="zmdi zmdi-account-circle"></i>
+							</button>
+							<div class="account-dropdown">
+								{% if frappe.session.user and frappe.session.user != "Guest" %}
+									<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+									<a href="/orders2">Orders</a>
+									<a href="/logout">Logout</a>
+								{% else %}
+									<a href="/login">Login</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+
+		<div class="wrap-header-mobile">
+			<div class="logo-mobile">
+				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+			</div>
+
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="0">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</div>
+
+				<div class="account-menu">
+					<button type="button" class="account-trigger dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" aria-label="Account menu">
+						<i class="zmdi zmdi-account-circle"></i>
+					</button>
+					<div class="account-dropdown">
+						{% if frappe.session.user and frappe.session.user != "Guest" %}
+							<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+							<a href="/orders2">Orders</a>
+							<a href="/logout">Logout</a>
+						{% else %}
+							<a href="/login">Login</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+		<div class="menu-mobile">
+			<ul class="main-menu-m">
+				<li><a href="/home">Home</a></li>
+				<li><a href="/products">Shop</a></li>
+				<li><a href="/shopping-cart">Cart</a></li>
+				<li><a href="/orders2">Orders</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+		</div>
+
+	</header>
+
+	<!-- Cart -->
+	<div class="wrap-header-cart js-panel-cart">
+		<div class="s-full js-hide-cart"></div>
+
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">Your Cart</span>
+
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
+
+			<div class="header-cart-content flex-w js-pscroll">
+				<ul class="header-cart-wrapitem w-full js-cart-drawer-items">
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-txt p-t-8">
+							<span class="header-cart-item-info">Your cart is empty.</span>
+						</div>
+					</li>
+				</ul>
+
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
+						Total: $0.00
+					</div>
+
+					<div class="header-cart-buttons flex-w w-full">
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
+
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+							Check Out
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+
+			<span class="stext-109 cl4">My Orders</span>
+		</div>
+	</div>
+
+	<main class="orders-shell">
+		<h2 class="mtext-109 cl2 p-b-30">My Orders</h2>
+
+		{% if login_required %}
+		<div class="order-card">
+			<p class="order-items">Please log in to view your orders.</p>
+			<div class="order-actions">
+				<a href="/login" class="order-action-primary">Login</a>
+			</div>
+		</div>
+		{% elif orders %}
+		{% for order in orders %}
+		<div class="order-card">
+			<div class="order-card-head">
+				<div>
+					<strong class="order-number">Order #{{ order.name }}</strong>
+					<span class="order-date">{{ order.date }}</span>
+				</div>
+				<div class="order-status {% if order.is_paid %}order-status-paid{% else %}order-status-pending{% endif %}">
+					{{ order.status }}
+				</div>
+			</div>
+
+			<div class="order-card-body">
+				<p class="order-items">{{ order.items_summary }}</p>
+				<strong class="order-total">{{ order.total }}</strong>
+			</div>
+
+			<div class="order-actions">
+				{% if not order.is_paid %}
+				<button
+					class="order-action-primary js-paynow-order"
+					type="button"
+					data-order-number="Order #{{ order.name }}"
+					data-order-invoice="{{ order.name }}"
+					data-order-total="{{ order.total }}"
+					data-order-amount="{{ order.amount }}"
+				>
+					Pay Now
+				</button>
+				{% endif %}
+				<button
+					class="order-action-secondary js-view-order"
+					type="button"
+					data-order-number="Order #{{ order.name }}"
+					data-order-total="{{ order.total }}"
+					data-order-items='{{ order.items_json | e }}'
+				>
+					View
+				</button>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<div class="order-card">
+			<p class="order-items">You have no orders yet.</p>
+			<div class="order-actions">
+				<a href="/products" class="order-action-primary">Shop Now</a>
+			</div>
+		</div>
+		{% endif %}
+	</main>
+
+	<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered order-modal-dialog" role="document">
+			<div class="modal-content order-modal-content">
+				<div class="modal-header order-modal-header">
+					<h5 class="modal-title js-order-modal-title">Order Details</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body order-modal-body">
+					<table class="table order-modal-table">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Qty</th>
+								<th>Price</th>
+								<th>Total</th>
+							</tr>
+						</thead>
+						<tbody id="modal-order-items"></tbody>
+					</table>
+					<div class="order-modal-total">
+						Order Total: <span id="modal-order-total">$0.00</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="paynowModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered order-modal-dialog" role="document">
+			<div class="modal-content order-modal-content">
+				<div class="modal-header order-modal-header">
+					<h5 class="modal-title js-paynow-modal-title">Pay with Paynow</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body order-modal-body">
+					<div class="paynow-panel">
+						<span class="paynow-brand">Pay with Paynow Gateway</span>
+						<p class="paynow-copy">
+							Enter your mobile money number to start payment for
+							<strong class="js-paynow-order-number">this order</strong>.
+						</p>
+						<p class="paynow-copy">
+							Amount: <strong class="js-paynow-order-total">$0.00</strong>
+						</p>
+					</div>
+
+					<label class="paynow-input-label" for="paynow-mobile-number">Mobile number</label>
+					<input
+						class="paynow-input"
+						id="paynow-mobile-number"
+						type="tel"
+						placeholder="e.g. 0771234567"
+						autocomplete="tel"
+					>
+
+					<button class="paynow-submit js-confirm-paynow" type="button">
+						Pay with Paynow
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="bg3 p-t-75 p-b-32">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">Categories</h4>
+
+					<ul>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Women</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Men</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Shoes</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Watches</a></li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">Help</h4>
+
+					<ul>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Track Order</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Returns</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">Shipping</a></li>
+						<li class="p-b-10"><a href="#" class="stext-107 cl7 hov-cl1 trans-04">FAQs</a></li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">GET IN TOUCH</h4>
+
+					<p class="stext-107 cl7 size-201">
+						Any questions? Let us know at 6037 Kuwadzana 5, 151 Street, Harare or call us on +263 77 603 1280
+					</p>
+
+					<div class="p-t-27">
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"><i class="fa fa-facebook"></i></a>
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"><i class="fa fa-instagram"></i></a>
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"><i class="fa fa-pinterest-p"></i></a>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">Newsletter</h4>
+
+					<form>
+						<div class="wrap-input1 w-full p-b-4">
+							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+							<div class="focus-input1 trans-04"></div>
+						</div>
+
+						<div class="p-t-18">
+							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04" type="button">
+								Subscribe
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="p-t-40">
+				<div class="flex-c-m flex-w p-b-18">
+					<a href="#" class="m-all-1"><img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY"></a>
+					<a href="#" class="m-all-1"><img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY"></a>
+					<a href="#" class="m-all-1"><img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY"></a>
+					<a href="#" class="m-all-1"><img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY"></a>
+					<a href="#" class="m-all-1"><img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY"></a>
+				</div>
+
+				<p class="stext-107 cl6 txt-center">
+					Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
+				</p>
+			</div>
+		</div>
+	</footer>
+
+	<div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+	</div>
+
+	<script>
+		window.frappe_boot = {
+			csrf_token: "{{ frappe.session.csrf_token }}",
+			user: "{{ frappe.session.user }}"
+		};
+	</script>
+
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/bootstrap/js/popper.js"></script>
+	<script src="/assets/shop_xi/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/sweetalert/sweetalert.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			$(this).css('position','relative');
+			$(this).css('overflow','hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+	</script>
+	<script>
+		function getGuestId() {
+			var match = document.cookie.match(/(?:^|; )guest_id=([^;]+)/);
+
+			if (match) {
+				return decodeURIComponent(match[1]);
+			}
+
+			var guestId = 'guest-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+			document.cookie = 'guest_id=' + encodeURIComponent(guestId) + '; path=/; max-age=' + (60 * 60 * 24 * 30);
+			return guestId;
+		}
+
+		function callCartApi(method, args, callback, errCallback) {
+			fetch('/api/method/' + method, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Frappe-CSRF-Token': window.frappe_boot && window.frappe_boot.csrf_token ? window.frappe_boot.csrf_token : ''
+				},
+				credentials: 'include',
+				body: JSON.stringify(args)
+			})
+				.then(function(res) {
+					return res.json().then(function(data) {
+						if (!res.ok) {
+							throw data || new Error('API error');
+						}
+
+						return data.message || data;
+					});
+				})
+				.then(function(data) {
+					if (callback) {
+						callback(data);
+					}
+				})
+				.catch(function(err) {
+					console.error('Cart API error:', method, err);
+					if (errCallback) {
+						errCallback(err);
+					}
+				});
+		}
+
+		function formatMoney(value) {
+			return '$' + (parseFloat(value) || 0).toFixed(2);
+		}
+
+		function escapeHtml(value) {
+			return $('<div>').text(value || '').html();
+		}
+
+		function updateCartBadge(count) {
+			$('.js-show-cart.icon-header-noti').attr('data-notify', count || 0);
+		}
+
+		function renderCartDrawer(data) {
+			var items = data.items || [];
+			var $items = $('.js-cart-drawer-items');
+			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+
+			updateCartBadge(data.cart_count || 0);
+			$('.js-cart-drawer-total').text('Total: ' + formatMoney(data.total || 0));
+
+			if (!items.length) {
+				$items.html(
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<span class="header-cart-item-info">Your cart is empty.</span>' +
+						'</div>' +
+					'</li>'
+				);
+				$(window).trigger('resize');
+				return;
+			}
+
+			$items.html(items.map(function(item) {
+				var image = escapeHtml(item.image || fallbackImage);
+				var name = escapeHtml(item.item_name || item.item || 'Product');
+				var qty = parseInt(item.qty, 10) || 0;
+				var rate = formatMoney(item.rate || 0);
+				var amount = formatMoney(item.amount || 0);
+
+				return (
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-img">' +
+							'<img src="' + image + '" alt="' + name + '">' +
+						'</div>' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">' + name + '</a>' +
+							'<span class="header-cart-item-info">' + qty + ' x ' + rate + ' = ' + amount + '</span>' +
+						'</div>' +
+					'</li>'
+				);
+			}).join(''));
+			$(window).trigger('resize');
+		}
+
+		function refreshCartDrawer() {
+			callCartApi('shop_xi.www.cart.get_cart_items', {
+				guest_id: getGuestId()
+			}, renderCartDrawer, function() {
+				$('.js-cart-drawer-items').html(
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<span class="header-cart-item-info">Could not load cart items.</span>' +
+						'</div>' +
+					'</li>'
+				);
+			});
+		}
+
+		var paymentPollTimer = null;
+
+		function storePendingPayment(invoice, orderNumber) {
+			localStorage.setItem('shop_xi_pending_payment', JSON.stringify({
+				invoice: invoice,
+				orderNumber: orderNumber,
+				startedAt: Date.now()
+			}));
+		}
+
+		function clearPendingPayment() {
+			localStorage.removeItem('shop_xi_pending_payment');
+			if (paymentPollTimer) {
+				clearInterval(paymentPollTimer);
+				paymentPollTimer = null;
+			}
+		}
+
+		function checkInvoicePayment(invoice, orderNumber) {
+			callCartApi('shop_xi.www.orders2.get_invoice_payment_status', {
+				invoice: invoice
+			}, function(data) {
+				if (!data.paid) {
+					return;
+				}
+
+				clearPendingPayment();
+				swal('Payment success', (orderNumber || invoice) + ' has been paid successfully.', 'success')
+					.then(function() {
+						window.location.reload();
+					});
+			});
+		}
+
+		function startPaymentPolling(invoice, orderNumber) {
+			if (!invoice) {
+				return;
+			}
+
+			if (paymentPollTimer) {
+				clearInterval(paymentPollTimer);
+			}
+
+			checkInvoicePayment(invoice, orderNumber);
+			paymentPollTimer = setInterval(function() {
+				checkInvoicePayment(invoice, orderNumber);
+			}, 5000);
+		}
+
+		function resumePendingPaymentPolling() {
+			var storedPayment = localStorage.getItem('shop_xi_pending_payment');
+
+			if (!storedPayment) {
+				return;
+			}
+
+			try {
+				storedPayment = JSON.parse(storedPayment);
+			} catch (err) {
+				clearPendingPayment();
+				return;
+			}
+
+			if (!storedPayment.invoice || Date.now() - storedPayment.startedAt > 15 * 60 * 1000) {
+				clearPendingPayment();
+				return;
+			}
+
+			startPaymentPolling(storedPayment.invoice, storedPayment.orderNumber);
+		}
+
+		$(document).on('click', '.js-view-order', function() {
+			var $button = $(this);
+			var orderNumber = $button.attr('data-order-number') || 'Order Details';
+			var orderTotal = $button.attr('data-order-total') || '$0.00';
+			var items = [];
+
+			try {
+				items = JSON.parse($button.attr('data-order-items') || '[]');
+			} catch (err) {
+				console.error('Order items could not be parsed:', err);
+			}
+
+			$('.js-order-modal-title').text(orderNumber);
+			$('#modal-order-total').text(orderTotal);
+			$('#modal-order-items').html(items.map(function(item) {
+				return (
+					'<tr>' +
+						'<td>' + escapeHtml(item.item || '') + '</td>' +
+						'<td>' + escapeHtml(item.qty || 0) + '</td>' +
+						'<td>' + escapeHtml(item.rate || '$0.00') + '</td>' +
+						'<td>' + escapeHtml(item.total || '$0.00') + '</td>' +
+					'</tr>'
+				);
+			}).join('') || '<tr><td colspan="4">No order items found.</td></tr>');
+
+			$('#orderModal').modal('show');
+		});
+
+		$(document).on('click', '.js-paynow-order', function() {
+			var $button = $(this);
+			var orderNumber = $button.attr('data-order-number') || 'this order';
+			var invoice = $button.attr('data-order-invoice') || '';
+			var orderTotal = $button.attr('data-order-total') || '$0.00';
+			var orderAmount = $button.attr('data-order-amount') || '0';
+
+			$('.js-paynow-modal-title').text('Pay with Paynow');
+			$('.js-paynow-order-number').text(orderNumber);
+			$('.js-paynow-order-total').text(orderTotal);
+			$('#paynow-mobile-number').val('');
+			$('#paynowModal').data({
+				invoice: invoice,
+				orderNumber: orderNumber,
+				orderTotal: orderTotal,
+				orderAmount: orderAmount
+			}).modal('show');
+		});
+
+		$(document).on('click', '.js-confirm-paynow', function() {
+			var mobileNumber = $('#paynow-mobile-number').val().trim();
+			var invoice = $('#paynowModal').data('invoice') || '';
+			var orderNumber = $('#paynowModal').data('orderNumber') || 'this order';
+			var orderTotal = $('#paynowModal').data('orderTotal') || '$0.00';
+			var orderAmount = $('#paynowModal').data('orderAmount') || '0';
+			var $button = $('.js-confirm-paynow');
+
+			if (!mobileNumber) {
+				swal('Mobile number required', 'Please enter your mobile number to pay with Paynow.', 'info');
+				return;
+			}
+
+			swal({
+				title: 'Confirm Paynow payment?',
+				text: 'Pay ' + orderTotal + ' for ' + orderNumber + ' using ' + mobileNumber + '?',
+				icon: 'warning',
+				buttons: ['Cancel', 'Yes, pay'],
+				dangerMode: false
+			}).then(function(willPay) {
+				if (!willPay) {
+					return;
+				}
+
+				$button.prop('disabled', true).text('Sending...');
+				callCartApi('paynow_gateway.paynow_gateway.api.process_paynow_payment', {
+					invoice: invoice,
+					phone: mobileNumber,
+					amount: orderAmount
+				}, function(data) {
+					$button.prop('disabled', false).text('Pay with Paynow');
+					$('#paynowModal').modal('hide');
+
+					if (data.status !== 'success') {
+						swal('Paynow error', data.message || 'Could not send payment request.', 'error');
+						return;
+					}
+
+					storePendingPayment(invoice, orderNumber);
+					startPaymentPolling(invoice, orderNumber);
+					swal(
+						'Payment request sent',
+						data.message || 'Check OTP on your mobile to confirm payment.',
+						'success'
+					);
+				}, function() {
+					$button.prop('disabled', false).text('Pay with Paynow');
+					swal('Paynow error', 'Could not send payment request. Please try again.', 'error');
+				});
+			});
+		});
+
+		$(document).on('click', '.js-show-cart', function() {
+			refreshCartDrawer();
+		});
+
+		refreshCartDrawer();
+		resumePendingPaymentPolling();
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/js/main.js"></script>
+
+</body>
+</html>

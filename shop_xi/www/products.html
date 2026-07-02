@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Product</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/linearicons-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/slick/slick.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/MagnificPopup/magnific-popup.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<style>
+		.product-toolbar-sticky {
+			position: sticky;
+			top: 70px;
+			z-index: 900;
+			background-color: #fff;
+			border-bottom: 1px solid #f0f0f0;
+			padding: 14px 0 18px;
+			margin-bottom: 34px;
+		}
+
+		.product-category-scroller {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			overflow-y: hidden;
+			max-width: calc(100% - 230px);
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: thin;
+		}
+
+		.product-category-scroller a {
+			flex: 0 0 auto;
+			white-space: nowrap;
+		}
+
+		.product-action-controls {
+			flex-shrink: 0;
+		}
+
+		.product-pagination .page-item {
+			margin: 4px;
+		}
+
+		.product-pagination .page-link {
+			min-width: 42px;
+			border-radius: 4px;
+			border-color: #e6e6e6;
+			color: #555;
+			font-family: Poppins-Medium;
+			font-size: 14px;
+			text-align: center;
+			transition: all 0.2s ease;
+		}
+
+		.product-pagination .page-link:hover {
+			border-color: #717fe0;
+			background-color: #f4f5ff;
+			color: #717fe0;
+		}
+
+		.product-pagination .page-item.active .page-link {
+			border-color: #717fe0;
+			background-color: #717fe0;
+			color: #fff;
+		}
+
+		.product-pagination .page-item.disabled .page-link {
+			color: #b2b2b2;
+			background-color: #f8f8f8;
+		}
+
+		.products-live-loading {
+			opacity: 0.45;
+			pointer-events: none;
+			transition: opacity 0.2s ease;
+		}
+
+			.product-delete-cart {
+				background-color: #dc3545;
+				border-color: #dc3545;
+			}
+
+			.product-delete-cart:hover {
+				background-color: #c82333;
+				border-color: #bd2130;
+				color: #fff;
+			}
+
+				.product-cart-button-row {
+					display: grid;
+					flex: 0 0 100%;
+					grid-template-columns: repeat(2, minmax(0, 179px));
+					gap: 10px;
+				}
+
+			.product-cart-button-row .size-101 {
+				margin: 0;
+				width: 100%;
+			}
+
+			.product-cart-summary {
+				border-top: 1px solid #e6e6e6;
+				gap: 12px;
+			}
+
+			.product-cart-summary-item {
+				border: 1px solid #e6e6e6;
+				min-width: 150px;
+				padding: 10px 14px;
+			}
+
+			.product-cart-summary-label {
+				color: #888;
+				display: block;
+				font-family: Poppins-Regular;
+				font-size: 12px;
+				line-height: 1.4;
+			}
+
+			.product-cart-summary-value {
+				color: #222;
+				display: block;
+				font-family: Poppins-Medium;
+				font-size: 16px;
+				line-height: 1.4;
+				margin-top: 2px;
+			}
+
+				@media (max-width: 575px) {
+					.product-cart-button-row {
+						grid-template-columns: 1fr;
+						width: 100%;
+					}
+				}
+
+		@media (max-width: 991px) {
+			.product-toolbar-sticky {
+				top: 0;
+				padding: 12px 0 14px;
+				margin-bottom: 28px;
+			}
+
+			.product-category-scroller {
+				order: 1;
+				width: 100%;
+				max-width: 100%;
+				padding-bottom: 6px;
+			}
+
+			.product-category-scroller a {
+				margin-right: 22px;
+			}
+
+			.product-action-controls {
+				order: 2;
+				width: 100%;
+				justify-content: flex-start;
+			}
+		}
+
+		@media (max-width: 575px) {
+			.product-toolbar-sticky {
+				margin-left: -15px;
+				margin-right: -15px;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+
+			.product-category-scroller a {
+				font-size: 13px;
+				margin-right: 18px;
+			}
+
+			.product-action-controls > div {
+				flex: 1 1 auto;
+				min-width: 128px;
+			}
+		}
+
+		.account-menu {
+			align-items: center;
+			display: inline-flex;
+			position: relative;
+		}
+
+		.account-trigger {
+			background: transparent;
+			border: 0;
+			cursor: pointer;
+		}
+
+		.account-dropdown {
+			background: #fff;
+			border: 1px solid #e6e6e6;
+			border-radius: 6px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+			min-width: 150px;
+			opacity: 0;
+			padding: 8px;
+			position: absolute;
+			right: 0;
+			top: calc(100% + 10px);
+			transform: translateY(6px);
+			transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+			visibility: hidden;
+			z-index: 1200;
+		}
+
+		.account-menu:hover .account-dropdown,
+		.account-menu:focus-within .account-dropdown {
+			opacity: 1;
+			transform: translateY(0);
+			visibility: visible;
+		}
+
+		.account-dropdown a,
+		.account-dropdown span {
+			color: #333;
+			display: block;
+			font-size: 13px;
+			line-height: 1.3;
+			padding: 8px 10px;
+			white-space: nowrap;
+		}
+
+		.account-dropdown a:hover {
+			color: #717fe0;
+		}
+
+		.account-name {
+			border-bottom: 1px solid #eee;
+			color: #888;
+			margin-bottom: 4px;
+		}
+	</style>
+<!--===============================================================================================-->
+</head>
+<body class="animsition">
+	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
+	
+	<!-- Header -->
+	<header class="header-v4">
+		<!-- Header desktop -->
+		<div class="container-menu-desktop">
+			<!-- Topbar -->
+			<div class="top-bar">
+				<div class="content-topbar flex-sb-m h-full container">
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							Help & FAQs
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							My Account
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							USD
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="wrap-menu-desktop how-shadow1">
+				<nav class="limiter-menu-desktop container">
+					
+					<!-- Logo desktop -->		
+					<a href="#" class="logo">
+						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+					</a>
+
+					<!-- Menu desktop -->
+					<div class="menu-desktop">
+						<ul class="main-menu">
+							<li><a href="/home">Home</a></li>
+							<li class="active-menu"><a href="/products">Shop</a></li>
+							<li><a href="/shopping-cart">Cart</a></li>
+							<li><a href="/orders2">Orders</a></li>
+							<li><a href="/contact">Contact</a></li>
+						</ul>
+					</div>	
+
+					<!-- Icon header -->
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</div>
+
+						<div class="account-menu">
+							<button type="button" class="account-trigger icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" aria-label="Account menu">
+								<i class="zmdi zmdi-account-circle"></i>
+							</button>
+							<div class="account-dropdown">
+								{% if frappe.session.user and frappe.session.user != "Guest" %}
+									<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+									<a href="/orders2">Orders</a>
+									<a href="/logout">Logout</a>
+								{% else %}
+									<a href="/login">Login</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>	
+		</div>
+
+		<!-- Header Mobile -->
+		<div class="wrap-header-mobile">
+			<!-- Logo moblie -->		
+			<div class="logo-mobile">
+				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+			</div>
+
+			<!-- Icon header -->
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</div>
+
+				<div class="account-menu">
+					<button type="button" class="account-trigger dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" aria-label="Account menu">
+						<i class="zmdi zmdi-account-circle"></i>
+					</button>
+					<div class="account-dropdown">
+						{% if frappe.session.user and frappe.session.user != "Guest" %}
+							<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+							<a href="/orders2">Orders</a>
+							<a href="/logout">Logout</a>
+						{% else %}
+							<a href="/login">Login</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<!-- Button show menu -->
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+
+		<!-- Menu Mobile -->
+		<div class="menu-mobile">
+			<ul class="topbar-mobile">
+				<li>
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+				</li>
+
+				<li>
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							Help & FAQs
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							My Account
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							USD
+						</a>
+					</div>
+				</li>
+			</ul>
+
+			<ul class="main-menu-m">
+				<li><a href="/home">Home</a></li>
+				<li><a href="/products">Shop</a></li>
+				<li><a href="/shopping-cart">Cart</a></li>
+				<li><a href="/orders2">Orders</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+		</div>
+
+	</header>
+
+	<!-- Cart -->
+	<div class="wrap-header-cart js-panel-cart">
+		<div class="s-full js-hide-cart"></div>
+
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					Your Cart
+				</span>
+
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
+			
+			<div class="header-cart-content flex-w js-pscroll">
+				<ul class="header-cart-wrapitem w-full js-cart-drawer-items">
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-txt p-t-8">
+							<span class="header-cart-item-info">
+								Your cart is empty.
+							</span>
+						</div>
+					</li>
+				</ul>
+				
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
+						Total: $0.00
+					</div>
+
+					<div class="header-cart-buttons flex-w w-full">
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
+
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+							Check Out
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<!-- Product -->
+	<div class="bg0 m-t-23 p-b-140">
+		<div class="container">
+				<div class="flex-w flex-sb-m product-toolbar-sticky">
+					<div class="flex-w flex-l-m filter-tope-group m-tb-10 product-category-scroller">
+						{% for category in category_links %}
+						<a href="{{ category.url }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {% if category.active %}how-active1{% endif %}">
+							{{ category.label }}
+						</a>
+						{% endfor %}
+					</div>
+
+				<div class="flex-w flex-c-m m-tb-10 product-action-controls">
+					<div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+						<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+						 Filter
+					</div>
+
+					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+						Search
+					</div>
+				</div>
+				
+					<!-- Search product -->
+					<div class="dis-none panel-search w-full p-t-10 p-b-15">
+						<form class="bor8 dis-flex p-l-15 js-live-search-form" method="get">
+							{% if selected_group %}
+							<input type="hidden" name="group" value="{{ selected_group }}">
+							{% endif %}
+							{% for option in sort_options %}
+							{% if option.active and option.value != "default" %}
+							<input type="hidden" name="sort" value="{{ option.value }}">
+							{% endif %}
+							{% endfor %}
+							{% for option in price_options %}
+							{% if option.active and option.value != "all" %}
+							<input type="hidden" name="price" value="{{ option.value }}">
+							{% endif %}
+							{% endfor %}
+							<input type="hidden" name="page" value="1">
+							<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" type="submit">
+								<i class="zmdi zmdi-search"></i>
+							</button>
+
+							<input class="mtext-107 cl2 size-114 plh2 p-r-15 js-live-search-input" type="search" name="q" value="{{ search }}" placeholder="Search products" autocomplete="off">
+						</form>	
+					</div>
+
+				<!-- Filter -->
+				<div class="dis-none panel-filter w-full p-t-10">
+					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+						<div class="filter-col1 p-r-15 p-b-27">
+							<div class="mtext-102 cl2 p-b-15">
+								Sort By
+							</div>
+
+								<ul>
+									{% for option in sort_options %}
+									<li class="p-b-6">
+										<a href="{{ option.url }}" class="filter-link stext-106 trans-04 {% if option.active %}filter-link-active{% endif %}">
+											{{ option.label }}
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+
+						<div class="filter-col2 p-r-15 p-b-27">
+							<div class="mtext-102 cl2 p-b-15">
+								Price
+							</div>
+
+								<ul>
+									{% for option in price_options %}
+									<li class="p-b-6">
+										<a href="{{ option.url }}" class="filter-link stext-106 trans-04 {% if option.active %}filter-link-active{% endif %}">
+											{{ option.label }}
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+			</div>
+
+				<div class="row isotope-grid js-products-grid">
+				{% for i in items %}
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+					<div class="block2">
+						<div class="block2-pic hov-img0">
+							<img src="{{ i.image or '/assets/shop_xi/images/product-01.jpg' }}" alt="{{ i.item_name or i.name }}">
+
+							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1 js-product-quick-view" data-product-index="{{ loop.index0 }}">
+								Quick View
+							</a>
+						</div>
+
+						<div class="block2-txt flex-w flex-t p-t-14">
+							<div class="block2-txt-child1 flex-col-l ">
+								<a href="/product?item={{ i.name | urlencode }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+									{{ i.item_name or i.name }}
+								</a>
+
+								{% if i.selling_price %}
+								<span class="stext-105 cl3">
+									${{ i.selling_price }}
+								</span>
+								{% endif %}
+							</div>
+
+							<div class="block2-txt-child2 flex-r p-t-3">
+								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" data-item="{{ i.name }}">
+									<img class="icon-heart1 dis-block trans-04" src="/assets/shop_xi/images/icons/icon-heart-01.png" alt="ICON">
+									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="/assets/shop_xi/images/icons/icon-heart-02.png" alt="ICON">
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<div class="col-12 p-b-35">
+					<p class="stext-106 cl6">No items found.</p>
+				</div>
+				{% endfor %}
+			</div>
+
+				<div class="js-pagination-wrap">
+				{% if show_pagination %}
+					<nav class="w-full p-t-45" aria-label="Product pagination">
+						<ul class="pagination product-pagination justify-content-center flex-wrap">
+						<li class="page-item {% if not has_prev %}disabled{% endif %}">
+							<a class="page-link" href="{{ prev_url }}" tabindex="{% if not has_prev %}-1{% else %}0{% endif %}" aria-disabled="{{ 'true' if not has_prev else 'false' }}">
+								Previous
+							</a>
+						</li>
+
+					{% for page_link in pages %}
+					<li class="page-item {% if page_link.active %}active{% endif %}" {% if page_link.active %}aria-current="page"{% endif %}>
+						<a class="page-link" href="{{ page_link.url }}">
+							{{ page_link.number }}
+						</a>
+					</li>
+					{% endfor %}
+
+						<li class="page-item {% if not has_next %}disabled{% endif %}">
+							<a class="page-link" href="{{ next_url }}" tabindex="{% if not has_next %}-1{% else %}0{% endif %}" aria-disabled="{{ 'true' if not has_next else 'false' }}">
+								Next
+							</a>
+						</li>
+				</ul>
+				</nav>
+				{% endif %}
+				</div>
+			</div>
+	</div>
+		
+
+	<!-- Footer -->
+	<footer class="bg3 p-t-75 p-b-32">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Categories
+					</h4>
+
+						<ul>
+							<li class="p-b-10">
+								<a href="?page=1" class="stext-107 cl7 hov-cl1 trans-04">
+									All Products
+								</a>
+							</li>
+
+							{% for g in item_groups %}
+							<li class="p-b-10">
+								<a href="?group={{ g.name | urlencode }}&page=1" class="stext-107 cl7 hov-cl1 trans-04">
+									{{ g.item_group_name }}
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Help
+					</h4>
+
+					<ul>
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Track Order
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Returns 
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Shipping
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								FAQs
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						GET IN TOUCH
+					</h4>
+
+					<p class="stext-107 cl7 size-201">
+						Any questions? Let us know at 6037 Kuwadzana 5, 151 Street, Harare or call us on +263 77 603 1280
+					</p>
+
+					<div class="p-t-27">
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-facebook"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-instagram"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-pinterest-p"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Newsletter
+					</h4>
+
+					<form>
+						<div class="wrap-input1 w-full p-b-4">
+							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+							<div class="focus-input1 trans-04"></div>
+						</div>
+
+						<div class="p-t-18">
+							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+								Subscribe
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="p-t-40">
+				<div class="flex-c-m flex-w p-b-18">
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
+					</a>
+				</div>
+
+				<p class="stext-107 cl6 txt-center">
+Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
+
+
+				</p>
+			</div>
+		</div>
+	</footer>
+
+
+	<!-- Back to top -->
+	<div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+	</div>
+
+	<!-- Modal1 -->
+	<div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+		<div class="overlay-modal1 js-hide-modal1"></div>
+
+		<div class="container">
+			<div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+				<button class="how-pos3 hov3 trans-04 js-hide-modal1">
+					<img src="/assets/shop_xi/images/icons/icon-close.png" alt="CLOSE">
+				</button>
+
+				<div class="row">
+					<div class="col-md-6 col-lg-7 p-b-30">
+						<div class="p-l-25 p-r-30 p-lr-0-lg">
+							<div class="wrap-slick3 flex-sb flex-w">
+								<div class="wrap-slick3-dots"></div>
+								<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+								<div class="slick3 gallery-lb">
+									<div class="item-slick3" data-thumb="/assets/shop_xi/images/product-detail-01.jpg">
+										<div class="wrap-pic-w pos-relative">
+											<img src="/assets/shop_xi/images/product-detail-01.jpg" alt="IMG-PRODUCT">
+
+											<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="/assets/shop_xi/images/product-detail-01.jpg">
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="item-slick3" data-thumb="/assets/shop_xi/images/product-detail-02.jpg">
+										<div class="wrap-pic-w pos-relative">
+											<img src="/assets/shop_xi/images/product-detail-02.jpg" alt="IMG-PRODUCT">
+
+											<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="/assets/shop_xi/images/product-detail-02.jpg">
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="item-slick3" data-thumb="/assets/shop_xi/images/product-detail-03.jpg">
+										<div class="wrap-pic-w pos-relative">
+											<img src="/assets/shop_xi/images/product-detail-03.jpg" alt="IMG-PRODUCT">
+
+											<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="/assets/shop_xi/images/product-detail-03.jpg">
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="col-md-6 col-lg-5 p-b-30">
+						<div class="p-r-50 p-t-5 p-lr-0-lg">
+							<h4 class="mtext-105 cl2 js-name-detail p-b-14">
+								Lightweight Jacket
+							</h4>
+
+							<span class="mtext-106 cl2 js-price-detail">
+								$58.79
+							</span>
+
+							<p class="stext-102 cl3 p-t-23 js-description-detail">
+								Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
+							</p>
+							
+							<!--  -->
+							<div class="p-t-33">
+								<div class="flex-w flex-r-m p-b-10">
+									<div class="size-203 flex-c-m respon6">
+										Size
+									</div>
+
+									<div class="size-204 respon6-next">
+										<div class="rs1-select2 bor8 bg0">
+											<select class="js-select2" name="time">
+												<option>Choose an option</option>
+												<option>Size S</option>
+												<option>Size M</option>
+												<option>Size L</option>
+												<option>Size XL</option>
+											</select>
+											<div class="dropDownSelect2"></div>
+										</div>
+									</div>
+								</div>
+
+								<div class="flex-w flex-r-m p-b-10">
+									<div class="size-203 flex-c-m respon6">
+										Color
+									</div>
+
+									<div class="size-204 respon6-next">
+										<div class="rs1-select2 bor8 bg0">
+											<select class="js-select2" name="time">
+												<option>Choose an option</option>
+												<option>Red</option>
+												<option>Blue</option>
+												<option>White</option>
+												<option>Grey</option>
+											</select>
+											<div class="dropDownSelect2"></div>
+										</div>
+									</div>
+								</div>
+
+								<div class="flex-w flex-r-m p-b-10">
+									<div class="size-204 flex-w flex-m respon6-next">
+										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
+											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-minus"></i>
+											</div>
+
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
+
+											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-plus"></i>
+											</div>
+										</div>
+
+											<div class="product-cart-button-row">
+												<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" data-item="">
+													Add to cart
+												</button>
+
+												<button class="flex-c-m stext-101 cl0 size-101 bor1 hov-btn1 p-lr-15 trans-04 js-deletecart-detail product-delete-cart dis-none" data-item="">
+													Delete
+												</button>
+											</div>
+										</div>
+									</div>
+							</div>
+
+							<div class="flex-w p-t-30 product-cart-summary">
+								<div class="product-cart-summary-item">
+									<span class="product-cart-summary-label">Quantity in cart</span>
+									<span class="product-cart-summary-value js-cart-qty-detail">0</span>
+								</div>
+
+								<div class="product-cart-summary-item">
+									<span class="product-cart-summary-label">Cart total</span>
+									<span class="product-cart-summary-value js-cart-total-detail">$0.00</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--===============================================================================================-->	
+	<script>
+		window.frappe_boot = {
+			csrf_token: "{{ frappe.session.csrf_token }}",
+			user: "{{ frappe.session.user }}"
+		};
+	</script>
+<!--===============================================================================================-->	
+	<script src="/assets/shop_xi/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/bootstrap/js/popper.js"></script>
+	<script src="/assets/shop_xi/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/daterangepicker/moment.min.js"></script>
+	<script src="/assets/shop_xi/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/slick/slick.min.js"></script>
+	<script src="/assets/shop_xi/js/slick-custom.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/parallax100/parallax100.js"></script>
+	<script>
+        $('.parallax100').parallax100();
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+	<script>
+		var productModalData = {{ modal_products | tojson }};
+
+		function initProductLightbox($gallery) {
+			if ($gallery.data('magnificPopup')) {
+				$gallery.magnificPopup('destroy');
+			}
+
+			$gallery.magnificPopup({
+		        delegate: 'a',
+		        type: 'image',
+		        gallery: {
+		        	enabled:true
+		        },
+		        mainClass: 'mfp-fade'
+		    });
+		}
+
+		function initProductSlick($gallery) {
+			var $wrap = $gallery.closest('.wrap-slick3');
+
+			if ($gallery.hasClass('slick-initialized')) {
+				$gallery.slick('unslick');
+			}
+
+			$wrap.find('.wrap-slick3-dots').empty();
+			$wrap.find('.wrap-slick3-arrows').empty();
+
+			$gallery.slick({
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				fade: true,
+				infinite: true,
+				autoplay: false,
+				autoplaySpeed: 6000,
+				arrows: true,
+				appendArrows: $wrap.find('.wrap-slick3-arrows'),
+				prevArrow:'<button class="arrow-slick3 prev-slick3"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
+				nextArrow:'<button class="arrow-slick3 next-slick3"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
+				dots: true,
+				appendDots: $wrap.find('.wrap-slick3-dots'),
+				dotsClass:'slick3-dots',
+				customPaging: function(slick, index) {
+					var portrait = $(slick.$slides[index]).data('thumb');
+					return '<img src=" ' + portrait + ' "/><div class="slick3-dot-overlay"></div>';
+				},
+			});
+		}
+
+		function setQuickViewProduct(product) {
+			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+			var images = product.images && product.images.length ? product.images : [fallbackImage];
+			var $gallery = $('.js-modal1 .gallery-lb');
+
+			$('.js-modal1 .js-name-detail').text(product.title || product.name || 'Product');
+			$('.js-modal1 .js-price-detail').text(product.price !== null && product.price !== undefined ? '$' + product.price : 'Price unavailable');
+			$('.js-modal1 .js-description-detail').html(product.description || 'No description available.');
+			$('.js-modal1 .js-addcart-detail').attr('data-item', product.name || '');
+			$('.js-modal1 .js-addcart-detail').attr('data-in-cart', '0').text('Add to cart');
+			$('.js-modal1 .js-deletecart-detail').attr('data-item', product.name || '');
+			updateModalCartSummary(0, 0);
+			$('.js-modal1 .num-product').val(1);
+
+			if (typeof refreshModalCartItem === 'function') {
+				refreshModalCartItem(product.name || '');
+			}
+
+			if ($gallery.hasClass('slick-initialized')) {
+				$gallery.slick('unslick');
+			}
+
+			$gallery.empty();
+
+			images.forEach(function(image) {
+				var $slide = $('<div class="item-slick3"></div>').attr('data-thumb', image);
+				var $pic = $('<div class="wrap-pic-w pos-relative"></div>');
+				var $img = $('<img alt="IMG-PRODUCT">').attr('src', image);
+				var $link = $('<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="#"><i class="fa fa-expand"></i></a>').attr('href', image);
+
+				$pic.append($img, $link);
+				$slide.append($pic);
+				$gallery.append($slide);
+			});
+
+			initProductSlick($gallery);
+			initProductLightbox($gallery);
+		}
+
+		$('.gallery-lb').each(function() {
+			initProductLightbox($(this));
+		});
+
+		function escapeHtml(value) {
+			return String(value || '').replace(/[&<>"']/g, function(char) {
+				return {
+					'&': '&amp;',
+					'<': '&lt;',
+					'>': '&gt;',
+					'"': '&quot;',
+					"'": '&#39;'
+				}[char];
+			});
+		}
+
+		function productUrl(itemName) {
+			return '/product?item=' + encodeURIComponent(itemName || '');
+		}
+
+		function renderProducts(items) {
+			if (!items || !items.length) {
+				return '<div class="col-12 p-b-35"><p class="stext-106 cl6">No items found.</p></div>';
+			}
+
+			return items.map(function(item, index) {
+				var image = item.image || '/assets/shop_xi/images/product-01.jpg';
+				var title = item.item_name || item.name || 'Product';
+				var price = item.selling_price !== null && item.selling_price !== undefined ? '<span class="stext-105 cl3">$' + escapeHtml(item.selling_price) + '</span>' : '';
+
+				return '' +
+					'<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">' +
+						'<div class="block2">' +
+							'<div class="block2-pic hov-img0">' +
+								'<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(title) + '">' +
+								'<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-product-quick-view" data-product-index="' + index + '">Quick View</a>' +
+							'</div>' +
+							'<div class="block2-txt flex-w flex-t p-t-14">' +
+								'<div class="block2-txt-child1 flex-col-l ">' +
+									'<a href="' + productUrl(item.name) + '" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">' + escapeHtml(title) + '</a>' +
+									price +
+								'</div>' +
+								'<div class="block2-txt-child2 flex-r p-t-3">' +
+									'<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" data-item="' + escapeHtml(item.name) + '">' +
+										'<img class="icon-heart1 dis-block trans-04" src="/assets/shop_xi/images/icons/icon-heart-01.png" alt="ICON">' +
+										'<img class="icon-heart2 dis-block trans-04 ab-t-l" src="/assets/shop_xi/images/icons/icon-heart-02.png" alt="ICON">' +
+									'</a>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>';
+			}).join('');
+		}
+
+		function renderPagination(data) {
+			if (!data.show_pagination) {
+				return '';
+			}
+
+			var pageLinks = (data.pages || []).map(function(page) {
+				return '' +
+					'<li class="page-item ' + (page.active ? 'active' : '') + '" ' + (page.active ? 'aria-current="page"' : '') + '>' +
+						'<a class="page-link" href="' + escapeHtml(page.url) + '">' + escapeHtml(page.number) + '</a>' +
+					'</li>';
+			}).join('');
+
+			return '' +
+				'<nav class="w-full p-t-45" aria-label="Product pagination">' +
+					'<ul class="pagination product-pagination justify-content-center flex-wrap">' +
+						'<li class="page-item ' + (!data.has_prev ? 'disabled' : '') + '">' +
+							'<a class="page-link" href="' + escapeHtml(data.prev_url) + '" tabindex="' + (!data.has_prev ? '-1' : '0') + '" aria-disabled="' + (!data.has_prev ? 'true' : 'false') + '">Previous</a>' +
+						'</li>' +
+						pageLinks +
+						'<li class="page-item ' + (!data.has_next ? 'disabled' : '') + '">' +
+							'<a class="page-link" href="' + escapeHtml(data.next_url) + '" tabindex="' + (!data.has_next ? '-1' : '0') + '" aria-disabled="' + (!data.has_next ? 'true' : 'false') + '">Next</a>' +
+						'</li>' +
+					'</ul>' +
+				'</nav>';
+		}
+
+		function getSearchParams(page) {
+			var params = new URLSearchParams(window.location.search);
+			var query = $('.js-live-search-input').val() || '';
+
+			params.set('q', query);
+			params.set('page', page || 1);
+
+			if (!query) {
+				params.delete('q');
+			}
+
+			return params;
+		}
+
+		function updateSearchUrl(params) {
+			var queryString = params.toString();
+			var url = window.location.pathname + (queryString ? '?' + queryString : '');
+			window.history.replaceState({}, '', url);
+		}
+
+		var liveSearchRequest = 0;
+
+		function runLiveSearch(page) {
+			var requestId = ++liveSearchRequest;
+			var params = getSearchParams(page);
+			var requestParams = new URLSearchParams(params);
+
+			$('.js-products-grid').addClass('products-live-loading');
+
+			return fetch('/api/method/shop_xi.www.products.search_products?' + requestParams.toString(), {
+				headers: {
+					'Accept': 'application/json'
+				}
+			})
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(response) {
+					var data = response.message || {};
+
+					if (requestId !== liveSearchRequest) {
+						return;
+					}
+
+					productModalData = data.modal_products || [];
+					$('.js-products-grid').html(renderProducts(data.items || []));
+					$('.js-pagination-wrap').html(renderPagination(data));
+					updateSearchUrl(params);
+				})
+				.finally(function() {
+					$('.js-products-grid').removeClass('products-live-loading');
+				});
+		}
+
+		var liveSearchTimer;
+
+		$('.js-live-search-input').on('input', function() {
+			clearTimeout(liveSearchTimer);
+			liveSearchTimer = setTimeout(function() {
+				runLiveSearch(1);
+			}, 250);
+		});
+
+		$('.js-live-search-form').on('submit', function(e) {
+			e.preventDefault();
+			clearTimeout(liveSearchTimer);
+			runLiveSearch(1);
+		});
+
+		$('.js-pagination-wrap').on('click', '.page-link', function(e) {
+			var $item = $(this).closest('.page-item');
+
+			if ($item.hasClass('disabled') || $item.hasClass('active')) {
+				e.preventDefault();
+				return;
+			}
+
+			e.preventDefault();
+			var params = new URLSearchParams($(this).attr('href').replace(/^\?/, ''));
+			$('.js-live-search-input').val(params.get('q') || '');
+			runLiveSearch(params.get('page') || 1);
+		});
+
+		$(document).on('click', '.js-product-quick-view', function(e) {
+			e.preventDefault();
+			var product = productModalData[$(this).data('product-index')];
+
+			if (product) {
+				setQuickViewProduct(product);
+			}
+
+			$('.js-modal1').addClass('show-modal1');
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/isotope/isotope.pkgd.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/sweetalert/sweetalert.min.js"></script>
+	<script>
+		function setCookie(name, value, days) {
+			var expires = '';
+
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+				expires = '; expires=' + date.toUTCString();
+			}
+
+			document.cookie = name + '=' + value + expires + '; path=/';
+		}
+
+		function getGuestId() {
+			var id = localStorage.getItem('guest_id');
+
+			if (!id) {
+				if (window.crypto && crypto.randomUUID) {
+					id = crypto.randomUUID();
+				} else {
+					id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+						var r = Math.random() * 16 | 0;
+						var v = c === 'x' ? r : (r & 0x3 | 0x8);
+						return v.toString(16);
+					});
+				}
+
+				localStorage.setItem('guest_id', id);
+			}
+
+			setCookie('guest_id', id, 365);
+			return id;
+		}
+
+		function callCartApi(method, args, callback, errCallback) {
+			fetch('/api/method/' + method, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Frappe-CSRF-Token': window.frappe_boot && window.frappe_boot.csrf_token ? window.frappe_boot.csrf_token : ''
+				},
+				credentials: 'include',
+				body: JSON.stringify(args)
+			})
+				.then(function(res) {
+					return res.json().then(function(data) {
+						if (!res.ok) {
+							throw data || new Error('API error');
+						}
+
+						return data.message || data;
+					});
+				})
+				.then(function(data) {
+					if (callback) {
+						callback(data);
+					}
+				})
+				.catch(function(err) {
+					console.error('Cart API error:', method, err);
+					if (errCallback) {
+						errCallback(err);
+					}
+				});
+		}
+
+		function updateCartBadge(count) {
+			$('.js-show-cart.icon-header-noti').attr('data-notify', count || 0);
+		}
+
+		function refreshCartCount() {
+			callCartApi('shop_xi.www.cart.get_cart_count', {
+				guest_id: getGuestId()
+			}, function(data) {
+				updateCartBadge(data.cart_count || 0);
+			});
+		}
+
+		function formatMoney(value) {
+			return '$' + (parseFloat(value) || 0).toFixed(2);
+		}
+
+		function escapeHtml(value) {
+			return $('<div>').text(value || '').html();
+		}
+
+		function renderCartDrawer(data) {
+			var items = data.items || [];
+			var $items = $('.js-cart-drawer-items');
+			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+
+			updateCartBadge(data.cart_count || 0);
+			$('.js-cart-drawer-total').text('Total: ' + formatMoney(data.total || 0));
+
+			if (!items.length) {
+				$items.html(
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<span class="header-cart-item-info">Your cart is empty.</span>' +
+						'</div>' +
+					'</li>'
+				);
+				$(window).trigger('resize');
+				return;
+			}
+
+			$items.html(items.map(function(item) {
+				var image = escapeHtml(item.image || fallbackImage);
+				var name = escapeHtml(item.item_name || item.item || 'Product');
+				var qty = parseInt(item.qty, 10) || 0;
+				var rate = formatMoney(item.rate || 0);
+				var amount = formatMoney(item.amount || 0);
+
+				return (
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-img">' +
+							'<img src="' + image + '" alt="' + name + '">' +
+						'</div>' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">' + name + '</a>' +
+							'<span class="header-cart-item-info">' + qty + ' x ' + rate + ' = ' + amount + '</span>' +
+						'</div>' +
+					'</li>'
+				);
+			}).join(''));
+			$(window).trigger('resize');
+		}
+
+		function refreshCartDrawer() {
+			callCartApi('shop_xi.www.cart.get_cart_items', {
+				guest_id: getGuestId()
+			}, renderCartDrawer, function() {
+				$('.js-cart-drawer-items').html(
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<span class="header-cart-item-info">Could not load cart items.</span>' +
+						'</div>' +
+					'</li>'
+				);
+			});
+		}
+
+		function updateModalCartSummary(qty, amount) {
+			qty = parseInt(qty, 10) || 0;
+
+			$('.js-modal1 .js-cart-qty-detail').text(qty);
+			$('.js-modal1 .js-cart-total-detail').text(formatMoney(amount));
+			$('.js-modal1 .js-addcart-detail')
+				.attr('data-in-cart', qty > 0 ? '1' : '0')
+				.text(qty > 0 ? 'Update cart' : 'Add to cart');
+
+			if (qty > 0) {
+				$('.js-modal1 .js-deletecart-detail').removeClass('dis-none');
+			} else {
+				$('.js-modal1 .js-deletecart-detail').addClass('dis-none');
+			}
+		}
+
+		function refreshModalCartItem(itemCode) {
+			if (!itemCode) {
+				updateModalCartSummary(0, 0);
+				return;
+			}
+
+			callCartApi('shop_xi.www.cart.get_cart_item', {
+				item_code: itemCode,
+				guest_id: getGuestId()
+			}, function(data) {
+				var cartQty = parseInt(data.qty, 10) || 0;
+
+				updateCartBadge(data.cart_count || 0);
+				updateModalCartSummary(cartQty, data.amount || 0);
+
+				if (cartQty > 0) {
+					$('.js-modal1 .num-product').val(cartQty);
+				}
+			});
+		}
+
+		$('.js-addwish-b2, .js-addwish-detail').on('click', function(e){
+			e.preventDefault();
+		});
+
+		$('.js-addwish-b2').each(function(){
+			var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+			$(this).on('click', function(){
+				swal(nameProduct, "is added to wishlist !", "success");
+
+				$(this).addClass('js-addedwish-b2');
+				$(this).off('click');
+			});
+		});
+
+		$('.js-addwish-detail').each(function(){
+			var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+			$(this).on('click', function(){
+				swal(nameProduct, "is added to wishlist !", "success");
+
+				$(this).addClass('js-addedwish-detail');
+				$(this).off('click');
+			});
+		});
+
+		/*---------------------------------------------*/
+
+		$(document).on('click', '.js-addcart-detail', function(e){
+			e.preventDefault();
+
+			var itemCode = $(this).attr('data-item');
+			var qty = parseInt($('.js-modal1 .num-product').val(), 10) || 1;
+			var nameProduct = $('.js-modal1 .js-name-detail').text().trim() || 'Product';
+			var isInCart = $(this).attr('data-in-cart') === '1';
+
+			if (!itemCode) {
+				swal('Missing item', 'Please choose a product first.', 'error');
+				return;
+			}
+
+			callCartApi('shop_xi.www.cart.add_to_cart', {
+				item_code: itemCode,
+				qty: qty,
+				guest_id: getGuestId(),
+				is_set_qty: isInCart ? 1 : 0
+			}, function(data) {
+				if (data.cart_count !== undefined) {
+					updateCartBadge(data.cart_count || 0);
+				} else {
+					refreshCartCount();
+				}
+
+				updateModalCartSummary(data.qty || 0, data.amount || 0);
+				refreshCartDrawer();
+				swal(nameProduct, isInCart ? 'cart quantity updated!' : 'is added to cart!', 'success');
+			}, function() {
+				swal('Cart error', 'Could not add this product to cart.', 'error');
+			});
+		});
+
+		$(document).on('click', '.js-deletecart-detail', function(e){
+			e.preventDefault();
+
+			var itemCode = $(this).attr('data-item');
+			var nameProduct = $('.js-modal1 .js-name-detail').text().trim() || 'Product';
+
+			if (!itemCode) {
+				swal('Missing item', 'Please choose a product first.', 'error');
+				return;
+			}
+
+			swal({
+				title: 'Remove from cart?',
+				text: 'Delete ' + nameProduct + ' from your cart?',
+				icon: 'warning',
+				buttons: ['Cancel', 'Delete'],
+				dangerMode: true
+			}).then(function(willDelete) {
+				if (!willDelete) {
+					return;
+				}
+
+				callCartApi('shop_xi.www.cart.delete_from_cart', {
+					item_code: itemCode,
+					guest_id: getGuestId()
+				}, function(data) {
+					updateCartBadge(data.cart_count || 0);
+					updateModalCartSummary(data.qty || 0, data.amount || 0);
+					$('.js-modal1 .num-product').val(1);
+					refreshCartDrawer();
+
+					if (data.status === 'not_found') {
+						swal(nameProduct, 'was not in your cart.', 'info');
+						return;
+					}
+
+					swal(nameProduct, 'has been removed from cart.', 'success');
+				}, function() {
+					swal('Cart error', 'Could not delete this product from cart.', 'error');
+				});
+			});
+		});
+
+		$(document).on('click', '.js-show-cart', function() {
+			refreshCartDrawer();
+		});
+
+		refreshCartCount();
+	
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			$(this).css('position','relative');
+			$(this).css('overflow','hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/js/main.js"></script>
+
+</body>
+</html>

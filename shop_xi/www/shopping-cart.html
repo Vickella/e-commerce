@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Shopping Cart</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/fonts/linearicons-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<style>
+		.js-cart-page-remove {
+			background: #e65540;
+			border: 1px solid #e65540;
+			border-radius: 3px;
+			color: #fff;
+			cursor: pointer;
+			font-family: Poppins-Medium;
+			font-size: 12px;
+			min-width: 78px;
+			padding: 9px 14px;
+			transition: all 0.3s;
+		}
+
+		.js-cart-page-remove:hover {
+			background: #222;
+			border-color: #222;
+		}
+
+		.cart-page-num-product-up,
+		.cart-page-num-product-down {
+			background: transparent;
+			border: 0;
+			cursor: pointer;
+			height: 100%;
+			width: 45px;
+		}
+
+		.account-menu {
+			align-items: center;
+			display: inline-flex;
+			position: relative;
+		}
+
+		.account-trigger {
+			background: transparent;
+			border: 0;
+			cursor: pointer;
+		}
+
+		.account-dropdown {
+			background: #fff;
+			border: 1px solid #e6e6e6;
+			border-radius: 6px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+			min-width: 150px;
+			opacity: 0;
+			padding: 8px;
+			position: absolute;
+			right: 0;
+			top: calc(100% + 10px);
+			transform: translateY(6px);
+			transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+			visibility: hidden;
+			z-index: 1200;
+		}
+
+		.account-menu:hover .account-dropdown,
+		.account-menu:focus-within .account-dropdown {
+			opacity: 1;
+			transform: translateY(0);
+			visibility: visible;
+		}
+
+		.account-dropdown a,
+		.account-dropdown span {
+			color: #333;
+			display: block;
+			font-size: 13px;
+			line-height: 1.3;
+			padding: 8px 10px;
+			white-space: nowrap;
+		}
+
+		.account-dropdown a:hover {
+			color: #717fe0;
+		}
+
+		.account-name {
+			border-bottom: 1px solid #eee;
+			color: #888;
+			margin-bottom: 4px;
+		}
+	</style>
+<!--===============================================================================================-->
+</head>
+<body class="animsition">
+	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
+
+	<!-- Header -->
+	<header class="header-v4">
+		<!-- Header desktop -->
+		<div class="container-menu-desktop">
+			<!-- Topbar -->
+			<div class="top-bar">
+				<div class="content-topbar flex-sb-m h-full container">
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							Help & FAQs
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							My Account
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							USD
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="wrap-menu-desktop how-shadow1">
+				<nav class="limiter-menu-desktop container">
+
+					<!-- Logo desktop -->
+					<a href="#" class="logo">
+						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+					</a>
+
+					<!-- Menu desktop -->
+					<div class="menu-desktop">
+						<ul class="main-menu">
+							<li><a href="/home">Home</a></li>
+							<li><a href="/products">Shop</a></li>
+							<li class="active-menu"><a href="/shopping-cart">Cart</a></li>
+							<li><a href="/orders2">Orders</a></li>
+							<li><a href="/contact">Contact</a></li>
+						</ul>
+					</div>
+
+					<!-- Icon header -->
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</div>
+
+						<div class="account-menu">
+							<button type="button" class="account-trigger icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" aria-label="Account menu">
+								<i class="zmdi zmdi-account-circle"></i>
+							</button>
+							<div class="account-dropdown">
+								{% if frappe.session.user and frappe.session.user != "Guest" %}
+									<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+									<a href="/orders2">Orders</a>
+									<a href="/logout">Logout</a>
+								{% else %}
+									<a href="/login">Login</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+
+		<!-- Header Mobile -->
+		<div class="wrap-header-mobile">
+			<!-- Logo moblie -->
+			<div class="logo-mobile">
+				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+			</div>
+
+			<!-- Icon header -->
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</div>
+
+				<div class="account-menu">
+					<button type="button" class="account-trigger dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" aria-label="Account menu">
+						<i class="zmdi zmdi-account-circle"></i>
+					</button>
+					<div class="account-dropdown">
+						{% if frappe.session.user and frappe.session.user != "Guest" %}
+							<span class="account-name">{{ frappe.session.user.split("@")[0] | capitalize }}</span>
+							<a href="/orders2">Orders</a>
+							<a href="/logout">Logout</a>
+						{% else %}
+							<a href="/login">Login</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<!-- Button show menu -->
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+
+		<!-- Menu Mobile -->
+		<div class="menu-mobile">
+			<ul class="topbar-mobile">
+				<li>
+					<div class="left-top-bar">
+						Free shipping for standard order over $100
+					</div>
+				</li>
+
+				<li>
+					<div class="right-top-bar flex-w h-full">
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							Help & FAQs
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							My Account
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							USD
+						</a>
+					</div>
+				</li>
+			</ul>
+
+			<ul class="main-menu-m">
+				<li><a href="/home">Home</a></li>
+				<li><a href="/products">Shop</a></li>
+				<li><a href="/shopping-cart">Cart</a></li>
+				<li><a href="/orders2">Orders</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+		</div>
+
+	</header>
+
+	<!-- Cart -->
+	<div class="wrap-header-cart js-panel-cart">
+		<div class="s-full js-hide-cart"></div>
+
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					Your Cart
+				</span>
+
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
+
+			<div class="header-cart-content flex-w js-pscroll">
+				<ul class="header-cart-wrapitem w-full js-cart-drawer-items">
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-txt p-t-8">
+							<span class="header-cart-item-info">
+								Your cart is empty.
+							</span>
+						</div>
+					</li>
+				</ul>
+
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
+						Total: $0.00
+					</div>
+
+					<div class="header-cart-buttons flex-w w-full">
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
+
+						<a href="/shopping-cart" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+							Check Out
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- breadcrumb -->
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+
+			<span class="stext-109 cl4">
+				Shopping Cart
+			</span>
+		</div>
+	</div>
+
+
+	<!-- Shopping Cart -->
+	<form class="bg0 p-t-75 p-b-85 js-shopping-cart-form">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+					<div class="m-l-25 m-r--38 m-lr-0-xl">
+						<div class="wrap-table-shopping-cart">
+							<table class="table-shopping-cart">
+								<tr class="table_head">
+									<th class="column-1">Product</th>
+									<th class="column-2"></th>
+									<th class="column-3">Price</th>
+									<th class="column-4">Quantity</th>
+									<th class="column-5">Total</th>
+									<th class="column-5">Action</th>
+								</tr>
+
+								<tbody class="js-cart-page-items">
+									<tr class="table_row">
+										<td class="column-1" colspan="6">Your cart is empty.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							<div class="flex-w flex-m m-r-20 m-tb-5">
+								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
+
+								<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+									Apply coupon
+								</div>
+							</div>
+
+							<button type="button" class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10 js-update-cart-page">
+								Update Cart
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+						<h4 class="mtext-109 cl2 p-b-30">
+							Cart Totals
+						</h4>
+
+						<div class="flex-w flex-t bor12 p-b-13">
+							<div class="size-208">
+								<span class="stext-110 cl2">
+									Subtotal:
+								</span>
+							</div>
+
+							<div class="size-209">
+								<span class="mtext-110 cl2 js-cart-subtotal">
+									$0.00
+								</span>
+							</div>
+						</div>
+
+						<div class="flex-w flex-t p-t-27 p-b-33">
+							<div class="size-208">
+								<span class="mtext-101 cl2">
+									Total:
+								</span>
+							</div>
+
+							<div class="size-209 p-t-1">
+								<span class="mtext-110 cl2 js-cart-total">
+									$0.00
+								</span>
+							</div>
+						</div>
+
+						<button type="button" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer js-proceed-checkout">
+							Proceed to Checkout
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+
+
+	<!-- Footer -->
+	<footer class="bg3 p-t-75 p-b-32">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Categories
+					</h4>
+
+					<ul>
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Women
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Men
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Shoes
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Watches
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Help
+					</h4>
+
+					<ul>
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Track Order
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Returns
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Shipping
+							</a>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								FAQs
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						GET IN TOUCH
+					</h4>
+
+					<p class="stext-107 cl7 size-201">
+						Any questions? Let us know at 6037 Kuwadzana 5, 151 Street, Harare or call us on +263 77 603 1280
+					</p>
+
+					<div class="p-t-27">
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-facebook"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-instagram"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-pinterest-p"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Newsletter
+					</h4>
+
+					<form>
+						<div class="wrap-input1 w-full p-b-4">
+							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+							<div class="focus-input1 trans-04"></div>
+						</div>
+
+						<div class="p-t-18">
+							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+								Subscribe
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="p-t-40">
+				<div class="flex-c-m flex-w p-b-18">
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
+					</a>
+				</div>
+
+				<p class="stext-107 cl6 txt-center">
+Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
+
+
+				</p>
+			</div>
+		</div>
+	</footer>
+
+
+	<!-- Back to top -->
+	<div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+	</div>
+
+	<script>
+		window.frappe_boot = {
+			csrf_token: "{{ frappe.session.csrf_token }}",
+			user: "{{ frappe.session.user }}"
+		};
+	</script>
+
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/bootstrap/js/popper.js"></script>
+	<script src="/assets/shop_xi/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/select2/select2.min.js"></script>
+	<script>
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/sweetalert/sweetalert.min.js"></script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			$(this).css('position','relative');
+			$(this).css('overflow','hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+	</script>
+	<script>
+		function getGuestId() {
+			var match = document.cookie.match(/(?:^|; )guest_id=([^;]+)/);
+
+			if (match) {
+				return decodeURIComponent(match[1]);
+			}
+
+			var guestId = 'guest-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+			document.cookie = 'guest_id=' + encodeURIComponent(guestId) + '; path=/; max-age=' + (60 * 60 * 24 * 30);
+			return guestId;
+		}
+
+		function callCartApi(method, args, callback, errCallback) {
+			fetch('/api/method/' + method, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Frappe-CSRF-Token': window.frappe_boot && window.frappe_boot.csrf_token ? window.frappe_boot.csrf_token : ''
+				},
+				credentials: 'include',
+				body: JSON.stringify(args)
+			})
+				.then(function(res) {
+					return res.json().then(function(data) {
+						if (!res.ok) {
+							throw data || new Error('API error');
+						}
+
+						return data.message || data;
+					});
+				})
+				.then(function(data) {
+					if (callback) {
+						callback(data);
+					}
+				})
+				.catch(function(err) {
+					console.error('Cart API error:', method, err);
+					if (errCallback) {
+						errCallback(err);
+					}
+				});
+		}
+
+		function formatMoney(value) {
+			return '$' + (parseFloat(value) || 0).toFixed(2);
+		}
+
+		function escapeHtml(value) {
+			return $('<div>').text(value || '').html();
+		}
+
+		function updateCartBadge(count) {
+			$('.js-show-cart.icon-header-noti').attr('data-notify', count || 0);
+		}
+
+		function renderCartDrawer(data) {
+			var items = data.items || [];
+			var $items = $('.js-cart-drawer-items');
+			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+
+			updateCartBadge(data.cart_count || 0);
+			$('.js-cart-drawer-total').text('Total: ' + formatMoney(data.total || 0));
+
+			if (!items.length) {
+				$items.html(
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<span class="header-cart-item-info">Your cart is empty.</span>' +
+						'</div>' +
+					'</li>'
+				);
+				$(window).trigger('resize');
+				return;
+			}
+
+			$items.html(items.map(function(item) {
+				var image = escapeHtml(item.image || fallbackImage);
+				var name = escapeHtml(item.item_name || item.item || 'Product');
+				var qty = parseInt(item.qty, 10) || 0;
+				var rate = formatMoney(item.rate || 0);
+				var amount = formatMoney(item.amount || 0);
+
+				return (
+					'<li class="header-cart-item flex-w flex-t m-b-12">' +
+						'<div class="header-cart-item-img">' +
+							'<img src="' + image + '" alt="' + name + '">' +
+						'</div>' +
+						'<div class="header-cart-item-txt p-t-8">' +
+							'<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">' + name + '</a>' +
+							'<span class="header-cart-item-info">' + qty + ' x ' + rate + ' = ' + amount + '</span>' +
+						'</div>' +
+					'</li>'
+				);
+			}).join(''));
+			$(window).trigger('resize');
+		}
+
+		function renderCartPage(data) {
+			var items = data.items || [];
+			var $items = $('.js-cart-page-items');
+			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+
+			$('.js-cart-subtotal, .js-cart-total').text(formatMoney(data.total || 0));
+
+			if (!items.length) {
+				$items.html('<tr class="table_row"><td class="column-1" colspan="6">Your cart is empty.</td></tr>');
+				return;
+			}
+
+			$items.html(items.map(function(item) {
+				var image = escapeHtml(item.image || fallbackImage);
+				var itemCode = escapeHtml(item.item || '');
+				var name = escapeHtml(item.item_name || item.item || 'Product');
+				var qty = parseInt(item.qty, 10) || 1;
+				var rate = formatMoney(item.rate || 0);
+				var amount = formatMoney(item.amount || 0);
+
+				return (
+					'<tr class="table_row js-cart-page-row" data-item="' + itemCode + '">' +
+						'<td class="column-1">' +
+							'<div class="how-itemcart1">' +
+								'<img src="' + image + '" alt="' + name + '">' +
+							'</div>' +
+						'</td>' +
+						'<td class="column-2">' + name + '</td>' +
+						'<td class="column-3">' + rate + '</td>' +
+						'<td class="column-4">' +
+							'<div class="wrap-num-product flex-w m-l-auto m-r-0">' +
+								'<button type="button" class="cart-page-num-product-down cl8 hov-btn3 trans-04 flex-c-m js-cart-page-qty-down">' +
+									'<i class="fs-16 zmdi zmdi-minus"></i>' +
+								'</button>' +
+								'<input class="mtext-104 cl3 txt-center num-product js-cart-page-qty" type="number" min="1" value="' + qty + '">' +
+								'<button type="button" class="cart-page-num-product-up cl8 hov-btn3 trans-04 flex-c-m js-cart-page-qty-up">' +
+									'<i class="fs-16 zmdi zmdi-plus"></i>' +
+								'</button>' +
+							'</div>' +
+						'</td>' +
+						'<td class="column-5">' + amount + '</td>' +
+						'<td class="column-5">' +
+							'<button type="button" class="js-cart-page-remove" data-item="' + itemCode + '">Delete</button>' +
+						'</td>' +
+					'</tr>'
+				);
+			}).join(''));
+		}
+
+		function refreshCartViews() {
+			callCartApi('shop_xi.www.cart.get_cart_items', {
+				guest_id: getGuestId()
+			}, function(data) {
+				renderCartDrawer(data);
+				renderCartPage(data);
+			}, function() {
+				$('.js-cart-page-items').html('<tr class="table_row"><td class="column-1" colspan="6">Could not load cart.</td></tr>');
+			});
+		}
+
+		function saveCartPageRows(done) {
+			var rows = $('.js-cart-page-row').toArray();
+
+			if (!rows.length) {
+				if (done) {
+					done(false, 'empty');
+				}
+				return;
+			}
+
+			var pending = rows.length;
+			var hasError = false;
+			rows.forEach(function(row) {
+				var $row = $(row);
+				var itemCode = $row.attr('data-item');
+				var qty = Math.max(parseInt($row.find('.js-cart-page-qty').val(), 10) || 1, 1);
+
+				callCartApi('shop_xi.www.cart.add_to_cart', {
+					item_code: itemCode,
+					qty: qty,
+					guest_id: getGuestId(),
+					is_set_qty: 1
+				}, function() {
+					pending -= 1;
+					if (pending === 0) {
+						if (done) {
+							done(!hasError);
+						}
+					}
+				}, function() {
+					hasError = true;
+					pending -= 1;
+					if (pending === 0) {
+						if (done) {
+							done(false);
+						}
+					}
+				});
+			});
+		}
+
+		function updateCartPageRows() {
+			saveCartPageRows(function(success, reason) {
+				refreshCartViews();
+				if (reason === 'empty') {
+					swal('Cart is empty', 'There are no items to update.', 'info');
+				} else if (success) {
+					swal('Cart updated', 'Your cart quantities have been updated.', 'success');
+				} else {
+					swal('Cart error', 'Some items could not be updated.', 'error');
+				}
+			});
+		}
+
+		function proceedToCheckout() {
+			var $button = $('.js-proceed-checkout');
+
+			if (!window.frappe_boot || window.frappe_boot.user === 'Guest') {
+				swal('Login required', 'Please log in before checkout.', 'info')
+					.then(function() {
+						window.location.href = '/login?redirect-to=' + encodeURIComponent('/shopping-cart?checkout=1');
+					});
+				return;
+			}
+
+			$button.prop('disabled', true).text('Processing...');
+			saveCartPageRows(function(success, reason) {
+				if (reason === 'empty') {
+					$button.prop('disabled', false).text('Proceed to Checkout');
+					swal('Cart is empty', 'Add items before checkout.', 'info');
+					return;
+				}
+
+				if (!success) {
+					$button.prop('disabled', false).text('Proceed to Checkout');
+					refreshCartViews();
+					swal('Cart error', 'Could not update cart before checkout.', 'error');
+					return;
+				}
+
+				callCartApi('shop_xi.www.cart.place_order', {}, function(data) {
+					$button.prop('disabled', false).text('Proceed to Checkout');
+
+					if (data.status === 'login_required') {
+						swal('Login required', data.message || 'Please log in before checkout.', 'info')
+							.then(function() {
+								window.location.href = data.redirect_to || '/login?redirect-to=' + encodeURIComponent('/shopping-cart?checkout=1');
+							});
+						return;
+					}
+
+					if (data.status !== 'success') {
+						swal('Checkout error', data.message || 'Could not create order.', 'error');
+						return;
+					}
+
+					refreshCartViews();
+					swal('Order placed', 'Invoice ' + data.invoice + ' has been created.', 'success')
+						.then(function() {
+							window.location.href = '/orders2';
+						});
+				}, function() {
+					$button.prop('disabled', false).text('Proceed to Checkout');
+					swal('Checkout error', 'Could not create order.', 'error');
+				});
+			});
+		}
+
+		$(document).on('click', '.js-cart-page-qty-down', function(e) {
+			e.preventDefault();
+			var $input = $(this).siblings('.js-cart-page-qty');
+			var qty = Math.max((parseInt($input.val(), 10) || 1) - 1, 1);
+			$input.val(qty);
+		});
+
+		$(document).on('click', '.js-cart-page-qty-up', function(e) {
+			e.preventDefault();
+			var $input = $(this).siblings('.js-cart-page-qty');
+			var qty = (parseInt($input.val(), 10) || 0) + 1;
+			$input.val(qty);
+		});
+
+		$(document).on('change', '.js-cart-page-qty', function() {
+			$(this).val(Math.max(parseInt($(this).val(), 10) || 1, 1));
+		});
+
+		$(document).on('click', '.js-update-cart-page', function(e) {
+			e.preventDefault();
+			updateCartPageRows();
+		});
+
+		$(document).on('click', '.js-proceed-checkout', function(e) {
+			e.preventDefault();
+			proceedToCheckout();
+		});
+
+		if (window.frappe_boot && window.frappe_boot.user !== 'Guest') {
+			var query = new URLSearchParams(window.location.search);
+			if (query.get('checkout') === '1') {
+				query.delete('checkout');
+				var cleanUrl = window.location.pathname + (query.toString() ? '?' + query.toString() : '');
+				window.history.replaceState({}, '', cleanUrl);
+				setTimeout(function() {
+					proceedToCheckout();
+				}, 500);
+			}
+		}
+
+		$(document).on('click', '.js-cart-page-remove', function(e) {
+			e.preventDefault();
+
+			var itemCode = $(this).attr('data-item');
+			var itemName = $(this).closest('.js-cart-page-row').find('.column-2').text().trim() || 'this item';
+
+			swal({
+				title: 'Remove from cart?',
+				text: 'Delete ' + itemName + ' from your cart?',
+				icon: 'warning',
+				buttons: ['Cancel', 'Delete'],
+				dangerMode: true
+			}).then(function(willDelete) {
+				if (!willDelete) {
+					return;
+				}
+
+				callCartApi('shop_xi.www.cart.delete_from_cart', {
+					item_code: itemCode,
+					guest_id: getGuestId()
+				}, function() {
+					refreshCartViews();
+					swal(itemName, 'has been removed from cart.', 'success');
+				}, function() {
+					refreshCartViews();
+					swal('Cart error', 'Could not delete this product from cart.', 'error');
+				});
+			});
+		});
+
+		$(document).on('click', '.js-show-cart', function() {
+			refreshCartViews();
+		});
+
+		$('.js-shopping-cart-form').on('submit', function(e) {
+			e.preventDefault();
+		});
+
+		refreshCartViews();
+	</script>
+<!--===============================================================================================-->
+	<script src="/assets/shop_xi/js/main.js"></script>
+
+</body>
+</html>

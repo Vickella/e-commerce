@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-06 21:56:43.314350",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "phone",
+  "address",
+  "column_break_pzvq",
+  "email"
+ ],
+ "fields": [
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_pzvq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-06 21:57:39.275977",
+ "modified_by": "Administrator",
+ "module": "Shop Xi",
+ "name": "Contact Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
