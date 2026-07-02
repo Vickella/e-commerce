@@ -4,11 +4,22 @@ import frappe
 
 
 DEFAULT_CATEGORY_IMAGES = [
-	"/assets/shop_xi/images/banner-04.jpg",
-	"/assets/shop_xi/images/banner-05.jpg",
-	"/assets/shop_xi/images/banner-07.jpg",
-	"/assets/shop_xi/images/banner-08.jpg",
-	"/assets/shop_xi/images/banner-09.jpg",
+	"/assets/shop_xi/images/ganz1.webp",
+	"/assets/shop_xi/images/ganz2.webp",
+	"/assets/shop_xi/images/ganz3.webp",
+	"/assets/shop_xi/images/ganz4.webp",
+	"/assets/shop_xi/images/ganz5.webp",
+]
+LANDING_HERO_IMAGES = [
+	"/assets/shop_xi/images/ganz6.webp",
+	"/assets/shop_xi/images/ganz7.webp",
+	"/assets/shop_xi/images/ganz8.webp",
+]
+LANDING_PRODUCT_IMAGES = [
+	"/assets/shop_xi/images/ganz9.webp",
+	"/assets/shop_xi/images/ganz10.webp",
+	"/assets/shop_xi/images/ganz1.webp",
+	"/assets/shop_xi/images/ganz2.webp",
 ]
 
 EXCLUDED_GROUP_FIELD = "custom_ecommerce_excluded_"
@@ -22,6 +33,8 @@ def get_context(context):
 	context.product_category_links = get_home_category_links()
 	context.trendy_items = get_trendy_items()
 	context.trendy_modal_products = get_modal_products(context.trendy_items)
+	context.landing_hero_images = LANDING_HERO_IMAGES
+	context.landing_product_images = LANDING_PRODUCT_IMAGES
 	return context
 
 

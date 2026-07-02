@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Home </title>
+	<title>Ganz & Ghost Store | Premium Essentials</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Shop premium essentials at Ganz & Ghost Store. Curated fashion, elevated everyday pieces, and fast checkout designed for modern shoppers.">
 <!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
 <!--===============================================================================================-->
@@ -140,6 +141,30 @@
 			margin-bottom: 4px;
 		}
 
+		.landing-benefits {
+			background: #fcfaf7;
+			border: 1px solid #e8dfd4;
+			border-radius: 12px;
+			box-shadow: none;
+		}
+
+		.landing-benefit {
+			min-height: 100%;
+		}
+
+		.landing-benefit-icon {
+			align-items: center;
+			background: transparent;
+			border: 1px solid #e0d7ca;
+			border-radius: 999px;
+			color: #1f1f1f;
+			display: inline-flex;
+			height: 40px;
+			justify-content: center;
+			margin-bottom: 10px;
+			width: 40px;
+		}
+
 		@media (max-width: 575px) {
 			.product-cart-button-row {
 				grid-template-columns: 1fr;
@@ -159,7 +184,7 @@
 				<nav class="limiter-menu-desktop p-l-45">
 
 					<!-- Logo desktop -->
-					<span style="color: white;">Ganz & Ghost</span>
+					<span style="color: white;">Ganz & Ghost Store</span>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
@@ -305,7 +330,7 @@
 
 				<div class="sidebar-gallery w-full p-tb-30">
 					<span class="mtext-101 cl5">
-						@ CozaStore
+						@ Ganz & Ghost Store
 					</span>
 
 					<div class="flex-w flex-sb p-t-36 gallery-lb">
@@ -428,72 +453,72 @@
 	<section class="section-slide">
 		<div class="wrap-slick1 rs2-slick1">
 			<div class="slick1">
-				<div class="item-slick1 bg-overlay1" style="background-image: url(/assets/shop_xi/images/slide-05.jpg);" data-thumb="/assets/shop_xi/images/thumb-01.jpg" data-caption="Women’s Wear">
+				<div class="item-slick1 bg-overlay1" style="background-image: url({{ landing_hero_images[0] }});" data-thumb="{{ landing_hero_images[0] }}" data-caption="Modern Essentials">
 					<div class="container h-full">
 						<div class="flex-col-c-m h-full p-t-100 p-b-60 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
 								<span class="ltext-202 txt-center cl0 respon2">
-									Women Collection 2018
+									Quiet luxury. Everyday essentials.
 								</span>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
 								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
-									New arrivals
+									Refined pieces with substance
 								</h2>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
 								<a href="/products" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-									Shop Now
+									Shop the edit
 								</a>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="item-slick1 bg-overlay1" style="background-image: url(/assets/shop_xi/images/slide-06.jpg);" data-thumb="/assets/shop_xi/images/thumb-02.jpg" data-caption="Men’s Wear">
+				<div class="item-slick1 bg-overlay1" style="background-image: url({{ landing_hero_images[1] }});" data-thumb="{{ landing_hero_images[1] }}" data-caption="Elevated Style">
 					<div class="container h-full">
 						<div class="flex-col-c-m h-full p-t-100 p-b-60 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
 								<span class="ltext-202 txt-center cl0 respon2">
-									Men New-Season
+									Sharp staples. Clean finish.
 								</span>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn" data-delay="800">
 								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
-									Jackets & Coats
+									Built for modern routines
 								</h2>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
 								<a href="/products" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-									Shop Now
+									Explore staples
 								</a>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="item-slick1 bg-overlay1" style="background-image: url(/assets/shop_xi/images/slide-07.jpg);" data-thumb="/assets/shop_xi/images/thumb-03.jpg" data-caption="Men’s Wear">
+				<div class="item-slick1 bg-overlay1" style="background-image: url({{ landing_hero_images[2] }});" data-thumb="{{ landing_hero_images[2] }}" data-caption="Signature Pieces">
 					<div class="container h-full">
 						<div class="flex-col-c-m h-full p-t-100 p-b-60 respon5">
 							<div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft" data-delay="0">
 								<span class="ltext-202 txt-center cl0 respon2">
-									Men Collection 2018
+									Made to last beyond the season
 								</span>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
 								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
-									NEW SEASON
+									Find a piece that feels like yours
 								</h2>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
 								<a href="/products" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-									Shop Now
+									Discover more
 								</a>
 							</div>
 						</div>
@@ -502,6 +527,41 @@
 			</div>
 
 			<div class="wrap-slick1-dots p-lr-10"></div>
+		</div>
+	</section>
+
+	<section class="bg0 p-t-20 p-b-20">
+		<div class="container">
+			<div class="landing-benefits p-lr-20 p-tb-20">
+				<div class="row align-items-center">
+					<div class="col-lg-6 p-b-10">
+						<p class="stext-103 cl5" style="letter-spacing: .18em; text-transform: uppercase;">Crafted with restraint</p>
+						<h3 class="mtext-101 cl2 p-b-8">Refined essentials, delivered with care.</h3>
+					</div>
+					<div class="col-lg-6 p-b-10">
+						<div class="row text-center">
+							<div class="col-4">
+								<div class="landing-benefit-icon mx-auto">
+									<i class="zmdi zmdi-time"></i>
+								</div>
+								<p class="stext-107 cl6 mb-0">Fast dispatch</p>
+							</div>
+							<div class="col-4">
+								<div class="landing-benefit-icon mx-auto">
+									<i class="zmdi zmdi-card"></i>
+								</div>
+								<p class="stext-107 cl6 mb-0">Secure pay</p>
+							</div>
+							<div class="col-4">
+								<div class="landing-benefit-icon mx-auto">
+									<i class="zmdi zmdi-refresh-alt"></i>
+								</div>
+								<p class="stext-107 cl6 mb-0">Easy returns</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 
@@ -514,7 +574,7 @@
 				<div class="{% if category.card_size == 'big' %}col-md-6{% else %}col-md-6 col-lg-4{% endif %} p-b-30 m-lr-auto">
 					<!-- Block1 -->
 					<div class="block1 wrap-pic-w">
-						<img src="{{ category.image }}" alt="{{ category.label }}">
+						<img src="{{ category.image or landing_product_images[loop.index0 % landing_product_images|length] }}" alt="{{ category.label }}" loading="lazy" decoding="async">
 
 						<a href="{{ category.url }}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
 							<div class="block1-txt-child1 flex-col-l">
@@ -529,7 +589,7 @@
 
 							<div class="block1-txt-child2 p-b-4 trans-05">
 								<div class="block1-link stext-101 cl0 trans-09">
-									Shop Now
+									Shop This Edit
 								</div>
 							</div>
 						</a>
@@ -546,8 +606,9 @@
 		<div class="container">
 			<div class="p-b-10">
 				<h3 class="ltext-103 cl5">
-					Product Overview
+					Best Sellers
 				</h3>
+				<p class="stext-107 cl6 p-t-8">A concise edit of the pieces customers return to most.</p>
 			</div>
 
 			<div class="flex-w flex-sb-m p-b-52">
@@ -566,10 +627,10 @@
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
 					<div class="block2">
 						<div class="block2-pic hov-img0 {% if loop.first %}label-new{% endif %}" {% if loop.first %}data-label="Trendy"{% endif %}>
-							<img src="{{ item.image or '/assets/shop_xi/images/product-01.jpg' }}" alt="{{ item.item_name or item.name }}">
+							<img src="{{ item.image or landing_product_images[loop.index0 % landing_product_images|length] }}" alt="{{ item.item_name or item.name }}" loading="lazy" decoding="async" width="600" height="760">
 
 							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1 js-product-quick-view" data-product-index="{{ loop.index0 }}">
-								Quick View
+								View Details
 							</a>
 						</div>
 
@@ -604,7 +665,7 @@
 
 			<div class="flex-c-m flex-w w-full p-t-38">
 				<a href="/products" class="flex-c-m stext-101 cl0 size-101 bg3 bor2 hov-btn3 p-lr-15 trans-04">
-					View All Products
+					Shop All Products
 				</a>
 			</div>
 		</div>
@@ -1026,7 +1087,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function setQuickViewProduct(product) {
-			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+			var fallbackImage = '/assets/shop_xi/images/ganz1.webp';
 			var images = product.images && product.images.length ? product.images : [fallbackImage];
 			var $gallery = $('.js-modal1 .gallery-lb');
 
@@ -1174,7 +1235,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		function renderCartDrawer(data) {
 			var items = data.items || [];
 			var $items = $('.js-cart-drawer-items');
-			var fallbackImage = '/assets/shop_xi/images/product-01.jpg';
+			var fallbackImage = '/assets/shop_xi/images/ganz1.webp';
 
 			updateCartBadge(data.cart_count || 0);
 			$('.js-cart-drawer-total').text('Total: ' + formatMoney(data.total || 0));
