@@ -45,17 +45,13 @@ def get_product_context(page, group, search, selected_sort, selected_price, page
     filters = {"disabled": 0}
     visible_group_names = get_visible_item_group_names()
 
-    if visible_group_names is not None:
-        if not visible_group_names:
-            return get_empty_product_context(page, group, search, selected_sort, selected_price)
-
-        filters["item_group"] = ["in", visible_group_names]
-
+    # If a specific group is requested, filter by that group
     if group:
         if visible_group_names is not None and group not in visible_group_names:
             return get_empty_product_context(page, group, search, selected_sort, selected_price)
-
         filters["item_group"] = group
+    # If no group specified, load all products (don't filter by visibility)
+    # This ensures "All Products" shows items by default
 
     or_filters = None
     if search:
