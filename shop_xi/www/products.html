@@ -34,14 +34,41 @@
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
 	<style>
+		.top-bar {
+			background-color: #fcfaf7;
+			border-bottom: 1px solid #efefef;
+			padding: 10px 0;
+			font-size: 13px;
+		}
+
+		.content-topbar {
+			justify-content: space-between;
+		}
+
+		.left-top-bar {
+			color: #666;
+			font-weight: 500;
+		}
+
+		.right-top-bar a {
+			font-size: 13px;
+			color: #666;
+			transition: all 0.3s ease;
+		}
+
+		.right-top-bar a:hover {
+			color: #717fe0;
+		}
+
 		.product-toolbar-sticky {
 			position: sticky;
 			top: 70px;
 			z-index: 900;
 			background-color: #fff;
 			border-bottom: 1px solid #f0f0f0;
-			padding: 14px 0 18px;
+			padding: 12px 0 15px;
 			margin-bottom: 34px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 		}
 
 		.product-category-scroller {
@@ -51,11 +78,44 @@
 			max-width: calc(100% - 230px);
 			-webkit-overflow-scrolling: touch;
 			scrollbar-width: thin;
+			scroll-behavior: smooth;
+		}
+
+		.product-category-scroller::-webkit-scrollbar {
+			height: 4px;
+		}
+
+		.product-category-scroller::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.product-category-scroller::-webkit-scrollbar-thumb {
+			background: #d0d0d0;
+			border-radius: 2px;
+		}
+
+		.product-category-scroller::-webkit-scrollbar-thumb:hover {
+			background: #999;
 		}
 
 		.product-category-scroller a {
 			flex: 0 0 auto;
 			white-space: nowrap;
+			padding-bottom: 8px;
+			border-bottom: 2px solid transparent;
+			transition: all 0.3s ease;
+			font-weight: 500;
+		}
+
+		.product-category-scroller a:hover {
+			color: #717fe0;
+			border-bottom-color: #717fe0;
+		}
+
+		.product-category-scroller a.how-active1 {
+			color: #717fe0;
+			border-bottom-color: #717fe0;
+			font-weight: 600;
 		}
 
 		.product-action-controls {
@@ -684,14 +744,16 @@
 
 				<div class="col-sm-6 col-lg-3 p-b-50">
 					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
+						REACH OUT
 					</h4>
 
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know at 6037 Kuwadzana 5, 151 Street, Harare or call us on +263 77 603 1280
-					</p>
+					<div class="stext-107 cl7 size-201 p-b-18">
+						<p class="p-b-8">6037 Kuwadzana 5, Harare</p>
+						<p class="p-b-8"><strong>+263 77 603 1280</strong></p>
+						<p>info@ganzandghost.com</p>
+					</div>
 
-					<div class="p-t-27">
+					<div class="p-t-18">
 						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
 							<i class="fa fa-facebook"></i>
 						</a>
@@ -1177,6 +1239,30 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		var liveSearchTimer;
+
+		// Smooth scroll active category into view
+		function scrollActiveCategoryIntoView() {
+			var $activeCategory = $('.product-category-scroller a.how-active1');
+			if ($activeCategory.length > 0) {
+				var scroller = $('.product-category-scroller')[0];
+				var categoryLeft = $activeCategory.position().left;
+				var categoryWidth = $activeCategory.outerWidth();
+				var scrollerWidth = scroller.clientWidth;
+				var currentScroll = scroller.scrollLeft;
+
+				// Check if element is outside of view
+				if (categoryLeft < 0) {
+					scroller.scrollLeft = currentScroll + categoryLeft - 20;
+				} else if (categoryLeft + categoryWidth > scrollerWidth) {
+					scroller.scrollLeft = currentScroll + (categoryLeft + categoryWidth - scrollerWidth) + 20;
+				}
+			}
+		}
+
+		// Run on page load
+		$(document).ready(function() {
+			setTimeout(scrollActiveCategoryIntoView, 100);
+		});
 
 		$('.js-live-search-input').on('input', function() {
 			clearTimeout(liveSearchTimer);
