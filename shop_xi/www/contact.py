@@ -6,7 +6,7 @@ from frappe.utils import validate_email_address
 DEFAULT_CONTACT_SETTINGS = {
 	"address": "6037 Kuwadzana 5, 151 Street, Harare",
 	"phone": "+263 77 603 1280",
-	"email": "contact@example.com",
+	"email": "Stephengandiwa01@gmail.com",
 }
 
 

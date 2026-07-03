@@ -1,7 +1,7 @@
 [project]
 name = "shop_xi"
 authors = [
-    { name = "munyaradzi chirove", email = "chirovemunyaradzi@gmail.com"}
+    { name = "munyaradzi chirove", email = "Stephengandiwa01@gmail.com"}
 ]
 description = "frappe ecommerce"
 requires-python = ">=3.10"

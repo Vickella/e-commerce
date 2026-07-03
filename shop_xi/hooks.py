@@ -2,7 +2,7 @@ app_name = "shop_xi"
 app_title = "Shop Xi"
 app_publisher = "munyaradzi chirove"
 app_description = "frappe ecommerce"
-app_email = "chirovemunyaradzi@gmail.com"
+app_email = "Stephengandiwa01@gmail.com"
 app_license = "mit"
 
 # Apps
