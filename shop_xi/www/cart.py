@@ -15,6 +15,22 @@ def get_cart_amount(qty, rate):
     return flt(qty) * flt(rate)
 
 
+def get_item_selling_price(item_code):
+    return flt(
+        frappe.db.get_value(
+            "Item Price",
+            {"item_code": item_code, "price_list": "Standard Selling", "selling": 1},
+            "price_list_rate",
+        )
+        or frappe.db.get_value(
+            "Item Price",
+            {"item_code": item_code, "selling": 1},
+            "price_list_rate",
+            order_by="modified desc",
+        )
+    )
+
+
 def get_user_email(user):
     return frappe.db.get_value("User", user, "email") or user
 
@@ -105,11 +121,7 @@ def add_to_cart(item_code, qty=1, guest_id=None, is_set_qty=False):
         frappe.throw("Cart owner could not be identified")
 
     qty = max(cint(qty), 1)
-    selling_price = frappe.db.get_value(
-        "Item Price",
-        {"item_code": item_code, "price_list": "Standard Selling"},
-        "price_list_rate",
-    )
+    selling_price = get_item_selling_price(item_code)
 
     existing = frappe.db.get_value(
         "Cart Item",
@@ -142,7 +154,7 @@ def add_to_cart(item_code, qty=1, guest_id=None, is_set_qty=False):
             "cart_owner": identity,
             "item": item_code,
             "qty": qty,
-            "rate": flt(selling_price),
+            "rate": selling_price,
         }
     )
     doc.flags.ignore_permissions = True
@@ -322,6 +334,7 @@ def merge_cart_on_login(login_manager):
                     "cart_owner": user,
                     "item": guest_item.item,
                     "qty": guest_item.qty,
+                    "rate": get_item_selling_price(guest_item.item),
                 }
             )
             doc.flags.ignore_permissions = True

@@ -1,4 +1,5 @@
 import math
+import re
 from urllib.parse import urlencode
 
 import frappe
@@ -13,7 +14,7 @@ def get_context(context):
     page = int(page) if page and str(page).isdigit() else 1
 
     page_length = 8
-    group = frappe.form_dict.get("group")
+    group = resolve_item_group(frappe.form_dict.get("group"))
     search = (frappe.form_dict.get("q") or "").strip()
     selected_sort = frappe.form_dict.get("sort") or "default"
     selected_price = frappe.form_dict.get("price") or "all"
@@ -38,10 +39,11 @@ def get_context(context):
 @frappe.whitelist(allow_guest=True)
 def search_products(q="", group="", sort="default", price="all", page=1):
     page = int(page) if page and str(page).isdigit() else 1
-    return get_product_context(page, group, (q or "").strip(), sort or "default", price or "all")
+    return get_product_context(page, resolve_item_group(group), (q or "").strip(), sort or "default", price or "all")
 
 
 def get_product_context(page, group, search, selected_sort, selected_price, page_length=8):
+    group = resolve_item_group(group)
     filters = {"disabled": 0}
     visible_group_names = get_visible_item_group_names()
 
@@ -212,9 +214,40 @@ def get_visible_item_groups():
 
 
 def get_visible_item_group_names():
-    meta = frappe.get_meta("Item Group")
-
     return [group.name for group in get_visible_item_groups()]
+
+
+def normalize_group_key(value):
+    return re.sub(r"[^a-z0-9]+", "", (value or "").strip().lower())
+
+
+def resolve_item_group(group):
+    group = (group or "").strip()
+
+    if not group:
+        return ""
+
+    item_groups = get_visible_item_groups()
+    group_key = normalize_group_key(group)
+
+    for item_group in item_groups:
+        candidates = {
+            item_group.name,
+            item_group.item_group_name,
+        }
+
+        normalized_candidates = {normalize_group_key(candidate) for candidate in candidates}
+
+        if group_key in normalized_candidates:
+            return item_group.name
+
+        if any(
+            group_key and (group_key in candidate or candidate in group_key)
+            for candidate in normalized_candidates
+        ):
+            return item_group.name
+
+    return group
 
 
 def get_empty_product_context(page, group, search, selected_sort, selected_price):
