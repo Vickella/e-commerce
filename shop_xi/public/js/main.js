@@ -200,7 +200,11 @@
 
     /*==================================================================
     [ Cart ]*/
-    $('.js-show-cart').on('click',function(){
+    $('.js-show-cart').on('click keydown',function(event){
+        if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+        event.preventDefault();
         $('.js-panel-cart').addClass('show-header-cart');
     });
 
