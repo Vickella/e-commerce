@@ -153,7 +153,7 @@
 
 					<!-- Logo desktop -->
 					<a href="#" class="logo">
-						{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<span class="storefront-wordmark storefront-wordmark-dark">Ganz <span>&amp; Ghost</span></span>{% endif %}
+						{% if ecommerce_logo and "/private/" not in ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<span class="storefront-wordmark storefront-wordmark-dark">Ganz <span>&amp; Ghost</span></span>{% endif %}
 					</a>
 
 					<!-- Menu desktop -->
@@ -196,7 +196,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="/" class="storefront-wordmark storefront-wordmark-dark" aria-label="Ganz and Ghost home">{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
+				<a href="/" class="storefront-wordmark storefront-wordmark-dark" aria-label="Ganz and Ghost home">{% if ecommerce_logo and "/private/" not in ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->
