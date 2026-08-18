@@ -6,6 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Browse Ganz &amp; Ghost essentials available in Zimbabwe. Filter, search, and shop the latest catalog with secure checkout.">
 	<link rel="canonical" href="/products">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="Shop Premium Essentials | Ganz &amp; Ghost">
+	<meta property="og:description" content="Browse distinctive footwear and everyday essentials available in Zimbabwe.">
+	<meta property="og:url" content="https://ganzandghost.com/products">
 <!--===============================================================================================-->	
 	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon-gg.png?v=2" sizes="128x128"/>
 <!--===============================================================================================-->
@@ -627,7 +631,7 @@
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
 					<div class="block2">
 						<div class="block2-pic hov-img0">
-							<img src="{{ i.image or '/assets/shop_xi/images/product-01.jpg' }}" alt="{{ i.item_name or i.name }}">
+							<img src="{{ i.image or '/assets/shop_xi/images/product-01.jpg' }}" alt="{{ i.item_name or i.name }}" loading="lazy" decoding="async" width="600" height="760">
 
 							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1 js-product-quick-view" data-product-index="{{ loop.index0 }}">
 								View Details
@@ -649,8 +653,8 @@
 
 							<div class="block2-txt-child2 flex-r p-t-3">
 								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" data-item="{{ i.name }}">
-									<img class="icon-heart1 dis-block trans-04" src="/assets/shop_xi/images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="/assets/shop_xi/images/icons/icon-heart-02.png" alt="ICON">
+									<img class="icon-heart1 dis-block trans-04" src="/assets/shop_xi/images/icons/icon-heart-01.png" alt="" aria-hidden="true">
+									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="/assets/shop_xi/images/icons/icon-heart-02.png" alt="" aria-hidden="true">
 								</a>
 							</div>
 						</div>

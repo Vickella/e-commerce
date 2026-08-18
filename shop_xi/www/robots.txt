@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /app/
+Disallow: /private/
+
+Sitemap: https://ganzandghost.com/sitemap.xml

@@ -86,8 +86,13 @@ html:has(.storefront-page) { overflow-x: hidden; }
 
 .storefront-home .main-menu > li > a { color: #f9f7f1; }
 .storefront-home .main-menu > li:hover > a { color: #f0b18d; }
+.storefront-home .wrap-header-mobile .icon-header-item,
+.storefront-home .wrap-header-mobile .account-trigger { color: #fff !important; }
+.storefront-home .wrap-header-mobile .icon-header-noti::after { background-color: #e8b091; color: var(--store-deep); }
 .storefront-home .section-slide { background: var(--store-deep); }
 .storefront-home .item-slick1 { min-height: min(720px, 82vh); }
+.storefront-home .slick1-dots .slick-dot { background: rgba(255,255,255,.58); border-radius: 50%; display: block; height: 9px; width: 9px; }
+.storefront-home .slick1-dots .slick-active .slick-dot { background: #fff; transform: scale(1.25); }
 
 .storefront-home .landing-benefits {
 	background: var(--store-surface);
