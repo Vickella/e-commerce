@@ -1,23 +1,94 @@
 import math
 import re
+import logging
+from typing import Dict, List, Optional, Any
 from urllib.parse import urlencode
 
 import frappe
 
+logger = logging.getLogger(__name__)
+no_cache = True
 
 EXCLUDED_GROUP_FIELD = "custom_ecommerce_excluded_"
 ROOT_ITEM_GROUPS = {"All Item Groups", "All Item Group"}
 
 
+# ============================================================================
+# HELPER: Get auto-publish groups from settings
+# ============================================================================
+
+def get_auto_publish_groups() -> List[str]:
+	"""
+	Get list of item groups configured for auto-publishing.
+
+	Returns:
+		list: Item group names, or empty list if not configured
+	"""
+	try:
+		settings = frappe.get_doc("Ecommerce Settings")
+
+		if not settings.auto_publish_enabled:
+			return []
+
+		groups = []
+		if hasattr(settings, 'auto_publish_groups') and settings.auto_publish_groups:
+			groups = [row.item_group for row in settings.auto_publish_groups if row.item_group]
+
+		return groups
+	except frappe.DoesNotExistError:
+		return []
+	except Exception as e:
+		logger.error(f"Error getting auto-publish groups: {str(e)}")
+		return []
+
+
+def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
+	"""
+	Fetch prices for multiple items in ONE database query (Performance Fix #4).
+
+	Args:
+		item_codes: List of item codes
+
+	Returns:
+		dict: Map of {item_code: price}
+	"""
+	if not item_codes:
+		return {}
+
+	try:
+		prices = frappe.get_all(
+			"Item Price",
+			fields=["item_code", "price_list_rate"],
+			filters={
+				"item_code": ["in", item_codes],
+				"selling": 1
+			},
+			order_by="modified desc"
+		)
+
+		price_map = {}
+		for price in prices:
+			if price.item_code not in price_map:
+				price_map[price.item_code] = frappe.utils.flt(price.price_list_rate)
+
+		return price_map
+	except Exception as e:
+		logger.error(f"Error fetching prices: {str(e)}")
+		return {}
+
+
 def get_context(context):
-    page = frappe.form_dict.get("page")
+    context.no_cache = True
+    request_args = frappe.local.request.args if frappe.local.request else frappe.form_dict
+    page = request_args.get("page")
     page = int(page) if page and str(page).isdigit() else 1
 
     page_length = 8
-    group = resolve_item_group(frappe.form_dict.get("group"))
-    search = (frappe.form_dict.get("q") or "").strip()
-    selected_sort = frappe.form_dict.get("sort") or "default"
-    selected_price = frappe.form_dict.get("price") or "all"
+    context.store_currency = frappe.defaults.get_global_default("currency") or "USD"
+    group = resolve_item_group(request_args.get("group"))
+    search = (request_args.get("q") or "").strip()
+    selected_sort = request_args.get("sort") or "default"
+    selected_price = request_args.get("price") or "all"
     product_context = get_product_context(page, group, search, selected_sort, selected_price, page_length)
     item_groups = get_visible_item_groups()
 
@@ -46,6 +117,16 @@ def get_product_context(page, group, search, selected_sort, selected_price, page
     group = resolve_item_group(group)
     filters = {"disabled": 0}
     visible_group_names = get_visible_item_group_names()
+    item_fields = [
+        "name",
+        "item_name",
+        "item_group",
+        "description",
+        "image",
+        "creation",
+    ]
+    if frappe.get_meta("Item").has_field("custom_image_2"):
+        item_fields.append("custom_image_2")
 
     # If a specific group is requested, filter by that group
     if group:
@@ -66,33 +147,20 @@ def get_product_context(page, group, search, selected_sort, selected_price, page
 
     all_items = frappe.get_all(
         "Item",
-        fields=[
-            "name",
-            "item_name",
-            "item_group",
-            "description",
-            "image",
-            "creation",
-            "custom_is_trendy",
-            "custom_just_arrived",
-            "custom_image_2",
-        ],
+        fields=item_fields,
         filters=filters,
         or_filters=or_filters,
         order_by="item_name asc",
     )
 
-    prices = frappe.get_all(
-        "Item Price",
-        fields=["item_code", "price_list_rate", "custom_price_before"],
-        filters={"selling": 1},
-    )
-    price_map = {p.item_code: p for p in prices}
+    # PERFORMANCE FIX #4: Batch fetch all prices in ONE query instead of N+1
+    item_codes = [item.name for item in all_items]
+    price_map = batch_get_item_prices(item_codes)
 
     for item in all_items:
         p = price_map.get(item.name)
-        item.selling_price = p.price_list_rate if p else None
-        item.custom_price_before = p.custom_price_before if p else None
+        item.selling_price = p if p else None
+        item.custom_price_before = None
 
     min_price, max_price = get_price_bounds(selected_price)
     if min_price is not None or max_price is not None:

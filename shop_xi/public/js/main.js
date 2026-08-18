@@ -77,9 +77,15 @@
 
     /*==================================================================
     [ Menu mobile ]*/
-    $('.btn-show-menu-mobile').on('click', function(){
+    $('.btn-show-menu-mobile').on('click keydown', function(event){
+        if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+        event.preventDefault();
         $(this).toggleClass('is-active');
         $('.menu-mobile').slideToggle();
+        $(this).attr('aria-expanded', $(this).hasClass('is-active') ? 'true' : 'false');
+        $(this).attr('aria-label', $(this).hasClass('is-active') ? 'Close menu' : 'Open menu');
     });
 
     var arrowMainMenu = $('.arrow-main-menu-m');

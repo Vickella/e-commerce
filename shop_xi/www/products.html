@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Product</title>
+	<title>Shop Premium Essentials | Ganz &amp; Ghost</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Browse Ganz &amp; Ghost essentials available in Zimbabwe. Filter, search, and shop the latest catalog with secure checkout.">
+	<link rel="canonical" href="/products">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon-gg.png?v=2" sizes="128x128"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
@@ -33,6 +35,7 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/storefront.css?v=nav-height-4">
 	<style>
 		.top-bar {
 			background-color: #fcfaf7;
@@ -76,6 +79,7 @@
 			overflow-x: auto;
 			overflow-y: hidden;
 			max-width: calc(100% - 230px);
+			scroll-snap-type: x proximity;
 			-webkit-overflow-scrolling: touch;
 			scrollbar-width: thin;
 			scroll-behavior: smooth;
@@ -100,6 +104,7 @@
 
 		.product-category-scroller a {
 			flex: 0 0 auto;
+			scroll-snap-align: start;
 			white-space: nowrap;
 			padding-bottom: 8px;
 			border-bottom: 2px solid transparent;
@@ -320,7 +325,7 @@
 	</style>
 <!--===============================================================================================-->
 </head>
-<body class="animsition">
+<body class="animsition storefront-page" data-currency="{{ store_currency }}">
 	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
 	
 	<!-- Header -->
@@ -348,7 +353,7 @@
 						</a>
 
 						<a href="#" class="flex-c-m trans-04 p-lr-25">
-							USD
+							{{ store_currency }}
 						</a>
 					</div>
 				</div>
@@ -358,14 +363,14 @@
 				<nav class="limiter-menu-desktop container">
 					
 					<!-- Logo desktop -->		
-					<a href="#" class="logo">
-						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+					<a href="/" class="logo">
+						{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<span class="storefront-wordmark storefront-wordmark-dark">Ganz <span>&amp; Ghost</span></span>{% endif %}
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li><a href="/home">Home</a></li>
+							<li><a href="/">Home</a></li>
 							<li class="active-menu"><a href="/products">Shop</a></li>
 							<li><a href="/shopping-cart">Cart</a></li>
 							<li><a href="/orders2">Orders</a></li>
@@ -402,7 +407,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->		
 			<div class="logo-mobile">
-				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+				<a href="/" class="storefront-wordmark storefront-wordmark-dark" aria-label="Ganz and Ghost home">{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->
@@ -428,7 +433,7 @@
 			</div>
 
 			<!-- Button show menu -->
-			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze" role="button" tabindex="0" aria-label="Open menu" aria-expanded="false">
 				<span class="hamburger-box">
 					<span class="hamburger-inner"></span>
 				</span>
@@ -460,14 +465,14 @@
 						</a>
 
 						<a href="#" class="flex-c-m p-lr-10 trans-04">
-							USD
+							{{ store_currency }}
 						</a>
 					</div>
 				</li>
 			</ul>
 
 			<ul class="main-menu-m">
-				<li><a href="/home">Home</a></li>
+				<li><a href="/">Home</a></li>
 				<li><a href="/products">Shop</a></li>
 				<li><a href="/shopping-cart">Cart</a></li>
 				<li><a href="/orders2">Orders</a></li>
@@ -505,7 +510,7 @@
 				
 				<div class="w-full">
 					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
-						Total: $0.00
+						Total: {{ store_currency }} 0.00
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -526,6 +531,11 @@
 	<!-- Product -->
 	<div class="bg0 m-t-23 p-b-70">
 		<div class="container">
+			<header class="storefront-page-intro p-t-45 p-b-25">
+				<p class="storefront-eyebrow">Ganz &amp; Ghost / Zimbabwe</p>
+				<h1 class="ltext-103 cl2">Shop the collection</h1>
+				<p class="stext-107 cl6">Considered essentials, clearly presented and ready for delivery from Harare.</p>
+			</header>
 				<div class="flex-w flex-sb-m product-toolbar-sticky">
 					<div class="flex-w flex-l-m filter-tope-group m-tb-10 product-category-scroller">
 						{% for category in category_links %}
@@ -626,13 +636,13 @@
 
 						<div class="block2-txt flex-w flex-t p-t-14">
 							<div class="block2-txt-child1 flex-col-l ">
-								<a href="/product?item={{ i.name | urlencode }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+								<a href="/products?q={{ (i.item_name or i.name) | urlencode }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 									{{ i.item_name or i.name }}
 								</a>
 
 								{% if i.selling_price %}
 								<span class="stext-105 cl3">
-									${{ i.selling_price }}
+									{{ store_currency }} {{ i.selling_price }}
 								</span>
 								{% endif %}
 							</div>
@@ -717,25 +727,25 @@
 
 					<ul>
 						<li class="p-b-8">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/orders2" class="stext-107 cl7 hov-cl1 trans-04">
 								Track Order
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=returns" class="stext-107 cl7 hov-cl1 trans-04">
 								Returns 
 							</a>
 						</li>
 
 <li class="p-b-8">
-					<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+					<a href="/contact?topic=shipping" class="stext-107 cl7 hov-cl1 trans-04">
 						Shipping
 					</a>
 				</li>
 
 				<li class="p-b-8">
-					<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+					<a href="/contact?topic=faq" class="stext-107 cl7 hov-cl1 trans-04">
 						FAQs
 					</a>
 				</li>
@@ -748,73 +758,25 @@
 			</h4>
 
 			<div class="stext-107 cl7 size-201 p-b-12">
-				<p class="p-b-4">6037 Kuwadzana 5, Harare</p>
+				<p class="p-b-4">Century Mall Upstairs Table 07, Cnr Julius Nyerere &amp; Nelson Mandela, Harare. Use FEDEX Entrance.</p>
 				<p class="p-b-4"><strong>+263 77 603 1280</strong></p>
-				<p>Stephengandiwa01@gmail.com</p>
+				<p>{{ frappe.db.get_single_value("Contact Settings", "email") or "" }}</p>
 			</div>
 
-			<div class="p-t-12">
-				<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-					<i class="fa fa-facebook"></i>
-				</a>
-
-				<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-					<i class="fa fa-instagram"></i>
-				</a>
-
-				<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-					<i class="fa fa-pinterest-p"></i>
-				</a>
-			</div>
 		</div>
 
 		<div class="col-sm-6 col-lg-3 p-b-30">
-			<h4 class="stext-301 cl0 p-b-20">
-						Newsletter
-					</h4>
+			<h4 class="stext-301 cl0 p-b-20">Store standards</h4>
+			<p class="stext-107 cl7 size-201">Secure checkout, clear pricing, and support from Harare for every order.</p>
+			<a href="/contact" class="stext-107 cl7 hov-cl1 trans-04 d-inline-block p-t-18">Contact support</a>
+		</div>
 
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="Stephengandiwa01@gmail.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
 			</div>
 
 			<div class="p-t-20">
-				<div class="flex-c-m flex-w p-b-10">
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
-
-
+				<p class="stext-107 cl6 txt-center storefront-copyright">
+					<span>&copy; 2026 Ganz &amp; Ghost (Pvt) Ltd. All rights reserved.</span>
+					<span>Designed by <a href="https://veritycore.co.zw" target="_blank" rel="noopener noreferrer">VerityCore Consultancy (Pvt) Ltd</a>.</span>
 				</p>
 			</div>
 		</div>
@@ -969,7 +931,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 
 								<div class="product-cart-summary-item">
 									<span class="product-cart-summary-label">Cart total</span>
-									<span class="product-cart-summary-value js-cart-total-detail">$0.00</span>
+									<span class="product-cart-summary-value js-cart-total-detail">{{ store_currency }} 0.00</span>
 								</div>
 							</div>
 						</div>
@@ -1071,7 +1033,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 			var $gallery = $('.js-modal1 .gallery-lb');
 
 			$('.js-modal1 .js-name-detail').text(product.title || product.name || 'Product');
-			$('.js-modal1 .js-price-detail').text(product.price !== null && product.price !== undefined ? '$' + product.price : 'Price unavailable');
+			$('.js-modal1 .js-price-detail').text(product.price !== null && product.price !== undefined ? $('body').data('currency') + ' ' + product.price : 'Price unavailable');
 			$('.js-modal1 .js-description-detail').html(product.description || 'No description available.');
 			$('.js-modal1 .js-addcart-detail').attr('data-item', product.name || '');
 			$('.js-modal1 .js-addcart-detail').attr('data-in-cart', '0').text('Add to cart');
@@ -1121,7 +1083,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function productUrl(itemName) {
-			return '/product?item=' + encodeURIComponent(itemName || '');
+			return '/products?q=' + encodeURIComponent(itemName || '');
 		}
 
 		function renderProducts(items) {
@@ -1132,7 +1094,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 			return items.map(function(item, index) {
 				var image = item.image || '/assets/shop_xi/images/product-01.jpg';
 				var title = item.item_name || item.name || 'Product';
-				var price = item.selling_price !== null && item.selling_price !== undefined ? '<span class="stext-105 cl3">$' + escapeHtml(item.selling_price) + '</span>' : '';
+				var price = item.selling_price !== null && item.selling_price !== undefined ? '<span class="stext-105 cl3">' + escapeHtml($('body').data('currency')) + ' ' + escapeHtml(item.selling_price) + '</span>' : '';
 
 				return '' +
 					'<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">' +
@@ -1385,7 +1347,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function formatMoney(value) {
-			return '$' + (parseFloat(value) || 0).toFixed(2);
+			return $('body').data('currency') + ' ' + (parseFloat(value) || 0).toFixed(2);
 		}
 
 		function escapeHtml(value) {

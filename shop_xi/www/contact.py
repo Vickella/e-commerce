@@ -1,10 +1,11 @@
 import frappe
 from frappe import _
+from frappe.rate_limiter import rate_limit
 from frappe.utils import validate_email_address
 
 
 DEFAULT_CONTACT_SETTINGS = {
-	"address": "6037 Kuwadzana 5, 151 Street, Harare",
+	"address": "Century Mall Upstairs Table 07, corner Julius Nyerere & Nelson Mandela, Harare. Use FEDEX Entrance.",
 	"phone": "+263 77 603 1280",
 	"email": "Stephengandiwa01@gmail.com",
 }
@@ -12,6 +13,7 @@ DEFAULT_CONTACT_SETTINGS = {
 
 def get_context(context):
 	settings = get_contact_settings()
+	context.store_currency = frappe.defaults.get_global_default("currency") or "USD"
 	context.contact_address = settings["address"]
 	context.contact_phone = settings["phone"]
 	context.contact_email = settings["email"]
@@ -40,6 +42,7 @@ def get_contact_settings():
 
 
 @frappe.whitelist(allow_guest=True)
+@rate_limit(limit=10, seconds=60 * 60)
 def save_contact(email=None, phone=None, message=None):
 	email = (email or "").strip()
 	phone = (phone or "").strip()
@@ -50,6 +53,15 @@ def save_contact(email=None, phone=None, message=None):
 
 	if not message:
 		frappe.throw(_("Message is required"))
+
+	if len(email) > 254:
+		frappe.throw(_("Email is too long"))
+
+	if len(phone) > 50:
+		frappe.throw(_("Phone number is too long"))
+
+	if len(message) > 5000:
+		frappe.throw(_("Message is too long"))
 
 	validate_email_address(email, throw=True)
 

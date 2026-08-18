@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon-gg.png?v=2" sizes="128x128"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
@@ -27,6 +27,7 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/storefront.css?v=nav-height-4">
 	<style>
 		.js-cart-page-remove {
 			background: #e65540;
@@ -113,7 +114,7 @@
 	</style>
 <!--===============================================================================================-->
 </head>
-<body class="animsition">
+<body class="animsition storefront-page" data-currency="{{ frappe.db.get_single_value('Global Defaults', 'default_currency') or 'USD' }}">
 	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
 
 	<!-- Header -->
@@ -141,7 +142,7 @@
 						</a>
 
 						<a href="#" class="flex-c-m trans-04 p-lr-25">
-							USD
+							{{ frappe.db.get_single_value("Global Defaults", "default_currency") or "USD" }}
 						</a>
 					</div>
 				</div>
@@ -152,13 +153,13 @@
 
 					<!-- Logo desktop -->
 					<a href="#" class="logo">
-						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+						{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<span class="storefront-wordmark storefront-wordmark-dark">Ganz <span>&amp; Ghost</span></span>{% endif %}
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li><a href="/home">Home</a></li>
+							<li><a href="/">Home</a></li>
 							<li><a href="/products">Shop</a></li>
 							<li class="active-menu"><a href="/shopping-cart">Cart</a></li>
 							<li><a href="/orders2">Orders</a></li>
@@ -195,7 +196,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+				<a href="/" class="storefront-wordmark storefront-wordmark-dark" aria-label="Ganz and Ghost home">{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->
@@ -253,14 +254,14 @@
 						</a>
 
 						<a href="#" class="flex-c-m p-lr-10 trans-04">
-							USD
+							{{ frappe.db.get_single_value("Global Defaults", "default_currency") or "USD" }}
 						</a>
 					</div>
 				</li>
 			</ul>
 
 			<ul class="main-menu-m">
-				<li><a href="/home">Home</a></li>
+				<li><a href="/">Home</a></li>
 				<li><a href="/products">Shop</a></li>
 				<li><a href="/shopping-cart">Cart</a></li>
 				<li><a href="/orders2">Orders</a></li>
@@ -298,7 +299,7 @@
 
 				<div class="w-full">
 					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
-						Total: $0.00
+						Total: {{ frappe.db.get_single_value("Global Defaults", "default_currency") or "USD" }} 0.00
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -319,7 +320,7 @@
 	<!-- breadcrumb -->
 	<div class="container">
 		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
+			<a href="/" class="stext-109 cl8 hov-cl1 trans-04">
 				Home
 				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
@@ -387,7 +388,7 @@
 
 							<div class="size-209">
 								<span class="mtext-110 cl2 js-cart-subtotal">
-									$0.00
+									{{ frappe.db.get_single_value("Global Defaults", "default_currency") or "USD" }} 0.00
 								</span>
 							</div>
 						</div>
@@ -401,7 +402,7 @@
 
 							<div class="size-209 p-t-1">
 								<span class="mtext-110 cl2 js-cart-total">
-									$0.00
+									{{ frappe.db.get_single_value("Global Defaults", "default_currency") or "USD" }} 0.00
 								</span>
 							</div>
 						</div>
@@ -428,29 +429,10 @@
 					</h4>
 
 					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
+						<li class="p-b-10"><a href="/products" class="stext-107 cl7 hov-cl1 trans-04">All Products</a></li>
+						{% for group in frappe.get_all("Item Group", fields=["name", "item_group_name"], filters={"is_group": 0}, order_by="item_group_name asc") %}
+						<li class="p-b-10"><a href="/products?group={{ group.name | urlencode }}" class="stext-107 cl7 hov-cl1 trans-04">{{ group.item_group_name or group.name }}</a></li>
+						{% endfor %}
 					</ul>
 				</div>
 
@@ -461,25 +443,25 @@
 
 					<ul>
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/orders2" class="stext-107 cl7 hov-cl1 trans-04">
 								Track Order
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=returns" class="stext-107 cl7 hov-cl1 trans-04">
 								Returns
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=shipping" class="stext-107 cl7 hov-cl1 trans-04">
 								Shipping
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=faq" class="stext-107 cl7 hov-cl1 trans-04">
 								FAQs
 							</a>
 						</li>
@@ -492,71 +474,24 @@
 					</h4>
 
 					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know at 6037 Kuwadzana 5, 151 Street, Harare or call us on +263 77 603 1280
+						Any questions? Visit us at Century Mall Upstairs Table 07, Cnr Julius Nyerere &amp; Nelson Mandela, Harare. Use FEDEX Entrance. Call us on +263 77 603 1280.
 					</p>
 
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
 				</div>
 
 				<div class="col-sm-6 col-lg-3 p-b-50">
 					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
+						Support
 					</h4>
 
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="Stephengandiwa01@gmail.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
+						<p class="stext-107 cl7 size-201">Need help with an order? <a href="/contact">Contact our Harare support team.</a></p>
 				</div>
 			</div>
 
 			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
-
-
+				<p class="stext-107 cl6 txt-center storefront-copyright">
+					<span>&copy; 2026 Ganz &amp; Ghost (Pvt) Ltd. All rights reserved.</span>
+					<span>Designed by <a href="https://veritycore.co.zw" target="_blank" rel="noopener noreferrer">VerityCore Consultancy (Pvt) Ltd</a>.</span>
 				</p>
 			</div>
 		</div>
@@ -661,7 +596,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function formatMoney(value) {
-			return '$' + (parseFloat(value) || 0).toFixed(2);
+			return $('body').data('currency') + ' ' + (parseFloat(value) || 0).toFixed(2);
 		}
 
 		function escapeHtml(value) {

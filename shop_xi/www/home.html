@@ -5,8 +5,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Shop premium essentials at Ganz & Ghost Store. Curated fashion, elevated everyday pieces, and fast checkout designed for modern shoppers.">
+	<link rel="canonical" href="/">
 <!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon-gg.png?v=2" sizes="128x128"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
@@ -34,6 +35,7 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/storefront.css?v=nav-height-4">
 	<style>
 		.product-delete-cart {
 			background-color: #dc3545;
@@ -173,7 +175,7 @@
 	</style>
 <!--===============================================================================================-->
 </head>
-<body class="animsition">
+<body class="animsition storefront-page storefront-home" data-currency="{{ store_currency }}">
 	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
 
 	<!-- Header -->
@@ -184,12 +186,12 @@
 				<nav class="limiter-menu-desktop p-l-45">
 
 					<!-- Logo desktop -->
-					<span style="color: white;">Ganz & Ghost Store</span>
+					<a href="/" class="storefront-wordmark" aria-label="Ganz and Ghost home">Ganz <span>&amp; Ghost</span></a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li class="active-menu"><a href="/home">Home</a></li>
+							<li class="active-menu"><a href="/">Home</a></li>
 							<li><a href="/products">Shop</a></li>
 							<li><a href="/shopping-cart">Cart</a></li>
 							<li><a href="/orders2">Orders</a></li>
@@ -228,7 +230,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+				<a href="/" class="storefront-wordmark" aria-label="Ganz and Ghost home">{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->
@@ -256,7 +258,7 @@
 			</div>
 
 			<!-- Button show menu -->
-			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze" role="button" tabindex="0" aria-label="Open menu" aria-expanded="false">
 				<span class="hamburger-box">
 					<span class="hamburger-inner"></span>
 				</span>
@@ -267,7 +269,7 @@
 		<!-- Menu Mobile -->
 		<div class="menu-mobile">
 			<ul class="main-menu-m">
-				<li><a href="/home">Home</a></li>
+				<li><a href="/">Home</a></li>
 				<li><a href="/products">Shop</a></li>
 				<li><a href="/shopping-cart">Cart</a></li>
 				<li><a href="/orders2">Orders</a></li>
@@ -292,7 +294,7 @@
 			<div class="sidebar-content flex-w w-full p-lr-65 js-pscroll">
 				<ul class="sidebar-link w-full">
 					<li class="p-b-13">
-						<a href="/home" class="stext-102 cl2 hov-cl1 trans-04">
+						<a href="/" class="stext-102 cl2 hov-cl1 trans-04">
 							Home
 						</a>
 					</li>
@@ -329,11 +331,11 @@
 				</ul>
 
 
-						About Us
+										About Ganz &amp; Ghost
 					</span>
 
-					<p class="stext-108 cl6 p-t-27">
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur maximus vulputate hendrerit. Praesent faucibus erat vitae rutrum gravida. Vestibulum tempus mi enim, in molestie sem fermentum quis.
+									<p class="stext-108 cl6 p-t-27">
+										Thoughtful essentials for everyday life, selected for their finish, function, and staying power.
 					</p>
 				</div>
 			</div>
@@ -367,7 +369,7 @@
 
 				<div class="w-full">
 					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
-						Total: $0.00
+						Total: {{ store_currency }} 0.00
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -400,9 +402,9 @@
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
+								<h1 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
 									Refined pieces with substance
-								</h2>
+								</h1>
 							</div>
 
 							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
@@ -461,6 +463,25 @@
 						</div>
 					</div>
 				</div>
+
+				{% for hero_image in landing_hero_images[3:] %}
+				{% set hero_copy = landing_hero_copy[loop.index0 % landing_hero_copy|length] %}
+				<div class="item-slick1 bg-overlay1" style="background-image: url({{ hero_image }});" data-thumb="{{ hero_image }}" data-caption="Featured footwear">
+					<div class="container h-full">
+						<div class="flex-col-c-m h-full p-t-100 p-b-60 respon5">
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="0">
+								<span class="ltext-202 txt-center cl0 respon2">{{ hero_copy[0] }}</span>
+							</div>
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="500">
+								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">{{ hero_copy[1] }}</h2>
+							</div>
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="1000">
+								<a href="/products" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn2 p-lr-15 trans-04">{{ hero_copy[2] }}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
 			</div>
 
 			<div class="wrap-slick1-dots p-lr-10"></div>
@@ -543,7 +564,7 @@
 		<div class="container">
 			<div class="p-b-10">
 				<h3 class="ltext-103 cl5">
-					Best Sellers
+									New arrivals
 				</h3>
 				<p class="stext-107 cl6 p-t-8">A concise edit of the pieces customers return to most.</p>
 			</div>
@@ -563,7 +584,7 @@
 				{% for item in trendy_items %}
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
 					<div class="block2">
-						<div class="block2-pic hov-img0 {% if loop.first %}label-new{% endif %}" {% if loop.first %}data-label="Trendy"{% endif %}>
+											<div class="block2-pic hov-img0 {% if loop.first %}label-new{% endif %}" {% if loop.first %}data-label="New"{% endif %}>
 							<img src="{{ item.image or landing_product_images[loop.index0 % landing_product_images|length] }}" alt="{{ item.item_name or item.name }}" loading="lazy" decoding="async" width="600" height="760">
 
 							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1 js-product-quick-view" data-product-index="{{ loop.index0 }}">
@@ -573,13 +594,13 @@
 
 						<div class="block2-txt flex-w flex-t p-t-14">
 							<div class="block2-txt-child1 flex-col-l ">
-								<a href="/product?item={{ item.name | urlencode }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+								<a href="/products?q={{ (item.item_name or item.name) | urlencode }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 									{{ item.item_name or item.name }}
 								</a>
 
 								{% if item.selling_price %}
 								<span class="stext-105 cl3">
-									${{ item.selling_price }}
+										{{ store_currency }} {{ item.selling_price }}
 								</span>
 								{% endif %}
 							</div>
@@ -595,7 +616,7 @@
 				</div>
 				{% else %}
 				<div class="col-12 p-b-35">
-					<p class="stext-106 cl6">No trendy items found.</p>
+									<p class="stext-106 cl6">New pieces are arriving soon.</p>
 				</div>
 				{% endfor %}
 			</div>
@@ -667,73 +688,25 @@
 					</h4>
 
 					<p class="stext-107 cl7 size-201">
-						6037 Kuwadzana 5, 151 Street, Harare
+						Century Mall Upstairs Table 07, corner Julius Nyerere &amp; Nelson Mandela, Harare. Use FEDEX Entrance.
 						<br><br>
 						<strong>Phone:</strong> +263 77 603 1280
 					</p>
 
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
 				</div>
 
 				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
-
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="Stephengandiwa01@gmail.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
+					<h4 class="stext-301 cl0 p-b-30">Store standards</h4>
+					<p class="stext-107 cl7 size-201">Secure checkout, clear pricing, and support from Harare for every order.</p>
+					<a href="/contact" class="stext-107 cl7 hov-cl1 trans-04 d-inline-block p-t-18">Contact support</a>
 				</div>
+
 			</div>
 
 			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
-
-
+				<p class="stext-107 cl6 txt-center storefront-copyright">
+					<span>&copy; 2026 Ganz &amp; Ghost (Pvt) Ltd. All rights reserved.</span>
+					<span>Designed by <a href="https://veritycore.co.zw" target="_blank" rel="noopener noreferrer">VerityCore Consultancy (Pvt) Ltd</a>.</span>
 				</p>
 			</div>
 		</div>
@@ -888,7 +861,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 
 								<div class="product-cart-summary-item">
 									<span class="product-cart-summary-label">Cart total</span>
-									<span class="product-cart-summary-value js-cart-total-detail">$0.00</span>
+									<span class="product-cart-summary-value js-cart-total-detail">{{ store_currency }} 0.00</span>
 								</div>
 							</div>
 
@@ -900,17 +873,6 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 									</a>
 								</div>
 
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Facebook">
-									<i class="fa fa-facebook"></i>
-								</a>
-
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Twitter">
-									<i class="fa fa-twitter"></i>
-								</a>
-
-								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Google Plus">
-									<i class="fa fa-google-plus"></i>
-								</a>
 							</div>
 						</div>
 					</div>
@@ -976,7 +938,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		var productModalData = {{ trendy_modal_products | tojson }};
 
 		function formatModalPrice(value) {
-			return value !== null && value !== undefined ? '$' + value : 'Price unavailable';
+			return value !== null && value !== undefined ? $('body').data('currency') + ' ' + value : 'Price unavailable';
 		}
 
 		function initProductLightbox($gallery) {
@@ -1160,7 +1122,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function formatMoney(value) {
-			return '$' + (parseFloat(value) || 0).toFixed(2);
+			return $('body').data('currency') + ' ' + (parseFloat(value) || 0).toFixed(2);
 		}
 
 		function escapeHtml(value) {

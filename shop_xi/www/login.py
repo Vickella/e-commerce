@@ -1,4 +1,4 @@
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urlparse, urlunparse
 
 import frappe
 from frappe import _
@@ -15,6 +15,7 @@ no_cache = True
 
 
 @frappe.whitelist(allow_guest=True)
+@rate_limit(limit=5, seconds=5 * 60)
 def custom_login(email, password, redirect_to=None):
 	try:
 		login_manager = LoginManager()
@@ -128,9 +129,10 @@ def sanitize_redirect(redirect: str | None) -> str | None:
 		return redirect
 
 	parsed_redirect = urlparse(redirect)
-	parsed_request_host = urlparse(frappe.local.request.url)
-
-	if parsed_redirect.netloc and parsed_redirect.netloc != parsed_request_host.netloc:
+	if parsed_redirect.scheme or parsed_redirect.netloc:
 		return "/"
 
-	return parsed_redirect.geturl()
+	if not parsed_redirect.path.startswith("/") or parsed_redirect.path.startswith("//"):
+		return "/"
+
+	return urlunparse(("", "", parsed_redirect.path, "", parsed_redirect.query, ""))

@@ -252,6 +252,16 @@ fixtures = [
 # 	"shop_xi.auth.validate"
 # ]
 
+# Document Events
+# ---------------
+# Hook on item events for auto-publishing to website
+doc_events = {
+	"Item": {
+		"after_insert": "shop_xi.events.item_events.after_item_insert",
+		"after_update": "shop_xi.events.item_events.after_item_update",
+	}
+}
+
 on_login = "shop_xi.www.cart.merge_cart_on_login"
 
 override_doctype_class = {

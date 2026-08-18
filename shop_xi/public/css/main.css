@@ -3365,3 +3365,11 @@ footer.bg3 .size-201 {
     padding-top: 28px !important;
   }
 }
+
+.btn-show-menu-mobile {
+  align-items: center;
+  display: inline-flex;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}

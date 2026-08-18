@@ -4,8 +4,10 @@
 	<title>Contact</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Contact Ganz &amp; Ghost in Harare, Zimbabwe for product, order, delivery, and returns support.">
+	<link rel="canonical" href="/contact">
 <!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon.png"/>
+	<link rel="icon" type="image/png" href="/assets/shop_xi/images/icons/favicon-gg.png?v=2" sizes="128x128"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
@@ -27,6 +29,7 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/assets/shop_xi/css/storefront.css?v=nav-height-4">
 	<style>
 		.account-menu {
 			align-items: center;
@@ -83,10 +86,27 @@
 			color: #888;
 			margin-bottom: 4px;
 		}
+
+		.btn-show-menu-mobile {
+			align-items: center;
+			display: inline-flex;
+			height: 48px;
+			justify-content: center;
+			width: 48px;
+		}
+
+		.js-contact-feedback {
+			color: #d92d20;
+			min-height: 20px;
+		}
+
+		.js-contact-feedback.is-success {
+			color: #147d4f;
+		}
 	</style>
 <!--===============================================================================================-->
 </head>
-<body class="animsition">
+<body class="animsition storefront-page" data-currency="{{ store_currency }}">
 	{% set ecommerce_logo = frappe.db.get_single_value("Ecommerce Settings", "logo") %}
 
 	<!-- Header -->
@@ -114,7 +134,7 @@
 						</a>
 
 						<a href="#" class="flex-c-m trans-04 p-lr-25">
-							USD
+							{{ store_currency }}
 						</a>
 					</div>
 				</div>
@@ -124,14 +144,14 @@
 				<nav class="limiter-menu-desktop container">
 
 					<!-- Logo desktop -->
-					<a href="/home" class="logo">
-						<img src="{{ ecommerce_logo }}" alt="IMG-LOGO">
+					<a href="/" class="logo">
+						{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<span class="storefront-wordmark storefront-wordmark-dark">Ganz <span>&amp; Ghost</span></span>{% endif %}
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li><a href="/home">Home</a></li>
+							<li><a href="/">Home</a></li>
 							<li><a href="/products">Shop</a></li>
 							<li><a href="/shopping-cart">Cart</a></li>
 							<li><a href="/orders2">Orders</a></li>
@@ -168,7 +188,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="/home"><img src="{{ ecommerce_logo }}" alt="IMG-LOGO"></a>
+				<a href="/" class="storefront-wordmark storefront-wordmark-dark" aria-label="Ganz and Ghost home">{% if ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->
@@ -194,7 +214,7 @@
 			</div>
 
 			<!-- Button show menu -->
-			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze" role="button" tabindex="0" aria-label="Open menu" aria-expanded="false">
 				<span class="hamburger-box">
 					<span class="hamburger-inner"></span>
 				</span>
@@ -205,7 +225,7 @@
 		<!-- Menu Mobile -->
 		<div class="menu-mobile">
 			<ul class="main-menu-m">
-				<li><a href="/home">Home</a></li>
+				<li><a href="/">Home</a></li>
 				<li><a href="/products">Shop</a></li>
 				<li><a href="/shopping-cart">Cart</a></li>
 				<li><a href="/orders2">Orders</a></li>
@@ -240,7 +260,7 @@
 
 				<div class="w-full">
 					<div class="header-cart-total w-full p-tb-40 js-cart-drawer-total">
-						Total: $0.00
+						Total: {{ store_currency }} 0.00
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -259,47 +279,54 @@
 
 
 	<!-- Title page -->
-	<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('/assets/shop_xi/images/bg-01.jpg');">
-		<h2 class="ltext-105 cl0 txt-center">
-			Contact
-		</h2>
+	<section class="bg-img1 txt-center p-lr-15 p-tb-92 storefront-contact-hero" style="background-image: url('/assets/shop_xi/images/bg-01.jpg');">
+		<p class="storefront-eyebrow storefront-eyebrow-light">Ganz &amp; Ghost / Harare</p>
+		<h1 class="ltext-105 cl0 txt-center">Let&apos;s make it easy.</h1>
+		<p class="storefront-contact-lead">Questions about an item, delivery, or your order? Our local support team is ready to help.</p>
 	</section>
 
 
 	<!-- Content page -->
-	<section class="bg0 p-t-104 p-b-116">
+	<section class="bg0 p-t-104 p-b-116 storefront-contact-section">
 		<div class="container">
-			<div class="flex-w flex-tr">
-				<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+			<div class="storefront-contact-grid">
+				<div class="storefront-form-card storefront-contact-form">
 					<form class="js-contact-form">
+						<p class="storefront-eyebrow">Customer support</p>
 						<h4 class="mtext-105 cl2 txt-center p-b-30">
 							Send Us A Message
 						</h4>
+						<p class="storefront-form-intro">Tell us what you are looking for and our Harare team will help with availability, payment, delivery, or wholesale.</p>
 
 						<div class="bor8 m-b-20 how-pos4-parent">
-							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="email" name="email" placeholder="Your Email Address" required>
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="email" name="email" placeholder="Your Email Address" maxlength="254" required>
 							<img class="how-pos4 pointer-none" src="/assets/shop_xi/images/icons/icon-email.png" alt="ICON">
 						</div>
 
 						<div class="bor8 m-b-20 how-pos4-parent">
-							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="tel" name="phone" placeholder="Phone Number">
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="tel" name="phone" placeholder="Phone Number" maxlength="50">
 							<span class="how-pos4 pointer-none">
 								<span class="lnr lnr-phone-handset"></span>
 							</span>
 						</div>
 
 						<div class="bor8 m-b-30">
-							<textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="message" placeholder="How Can We Help?" required></textarea>
+							<textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="message" placeholder="How Can We Help?" maxlength="5000" required></textarea>
 						</div>
 
 						<button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer js-contact-submit" type="submit">
 							Submit
 						</button>
+						<p class="js-contact-feedback m-t-12" role="alert" aria-live="polite"></p>
 					</form>
 				</div>
 
-				<div class="size-210 bor10 flex-w flex-col-m p-lr-93 p-tb-30 p-lr-15-lg w-full-md">
-					<div class="flex-w w-full p-b-42">
+				<div class="storefront-contact-card storefront-contact-info">
+					<div class="storefront-info-heading">
+						<p class="storefront-eyebrow">Find us in Harare</p>
+						<h2>Visit or reach out.</h2>
+					</div>
+					<div class="storefront-info-item">
 						<span class="fs-18 cl5 txt-center size-211">
 							<span class="lnr lnr-map-marker"></span>
 						</span>
@@ -315,7 +342,7 @@
 						</div>
 					</div>
 
-					<div class="flex-w w-full p-b-42">
+					<div class="storefront-info-item">
 						<span class="fs-18 cl5 txt-center size-211">
 							<span class="lnr lnr-phone-handset"></span>
 						</span>
@@ -331,7 +358,7 @@
 						</div>
 					</div>
 
-					<div class="flex-w w-full">
+					<div class="storefront-info-item">
 						<span class="fs-18 cl5 txt-center size-211">
 							<span class="lnr lnr-envelope"></span>
 						</span>
@@ -346,17 +373,43 @@
 							</p>
 						</div>
 					</div>
+					<div class="storefront-info-rule"></div>
+					<div class="storefront-hours">
+						<span>Order support</span>
+						<strong>Payment, delivery &amp; wholesale enquiries</strong>
+						<small>Orders are prepared within up to five days after payment confirmation.</small>
+					</div>
 				</div>
+			</div>
+			<div class="storefront-contact-note">
+				<p class="storefront-eyebrow">Customer care</p>
+				<h2>Real help, from people who know the shop.</h2>
+				<p>We are based in Harare and keep our answers practical: clear availability, honest delivery guidance, and help choosing the right piece.</p>
+			</div>
+			<div class="storefront-policy-grid">
+				<article class="storefront-policy-card">
+					<p class="storefront-eyebrow">How to order</p>
+					<h3>Choose. Pay. Confirm.</h3>
+					<p>Create an order for the shoes you want, then complete payment through the online shop. Your order is confirmed once payment is received.</p>
+				</article>
+				<article class="storefront-policy-card">
+					<p class="storefront-eyebrow">Delivery</p>
+					<h3>Up to five days after payment.</h3>
+					<p>Orders take up to five days after payment confirmation. Harare deliveries are arranged locally; outside Harare we use trusted buses or courier services.</p>
+				</article>
+				<article class="storefront-policy-card">
+					<p class="storefront-eyebrow">Wholesale</p>
+					<h3>Stock up with us.</h3>
+					<p>We support wholesale orders and dropshipping from Mozambique. Contact the team with the styles, sizes, and quantities you need.</p>
+				</article>
+				<article class="storefront-policy-card">
+					<p class="storefront-eyebrow">FAQ</p>
+					<h3>Need a quick answer?</h3>
+					<p>Ask about availability, payment confirmation, delivery timing, wholesale pricing, or courier options. We will respond with the details for your order.</p>
+				</article>
 			</div>
 		</div>
 	</section>
-
-
-	<!-- Map -->
-	<div class="map">
-		<div class="size-303" id="google_map" data-map-x="40.691446" data-map-y="-73.886787" data-pin="/assets/shop_xi/images/icons/pin.png" data-scrollwhell="0" data-draggable="1" data-zoom="11"></div>
-	</div>
-
 
 
 	<!-- Footer -->
@@ -369,29 +422,10 @@
 					</h4>
 
 					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
+						<li class="p-b-10"><a href="/products" class="stext-107 cl7 hov-cl1 trans-04">All Products</a></li>
+						{% for group in frappe.get_all("Item Group", fields=["name", "item_group_name"], filters={"is_group": 0}, order_by="item_group_name asc") %}
+						<li class="p-b-10"><a href="/products?group={{ group.name | urlencode }}" class="stext-107 cl7 hov-cl1 trans-04">{{ group.item_group_name or group.name }}</a></li>
+						{% endfor %}
 					</ul>
 				</div>
 
@@ -402,25 +436,25 @@
 
 					<ul>
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/orders2" class="stext-107 cl7 hov-cl1 trans-04">
 								Track Order
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=returns" class="stext-107 cl7 hov-cl1 trans-04">
 								Returns
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=shipping" class="stext-107 cl7 hov-cl1 trans-04">
 								Shipping
 							</a>
 						</li>
 
 						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+							<a href="/contact?topic=faq" class="stext-107 cl7 hov-cl1 trans-04">
 								FAQs
 							</a>
 						</li>
@@ -436,68 +470,20 @@
 						Any questions? Let us know at {{ contact_address }} or call us on {{ contact_phone }}.
 					</p>
 
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
 				</div>
 
 				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
-
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="Stephengandiwa01@gmail.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
+					<h4 class="stext-301 cl0 p-b-30">Store standards</h4>
+					<p class="stext-107 cl7 size-201">Secure checkout, clear pricing, and support from Harare for every order.</p>
+					<a href="/contact" class="stext-107 cl7 hov-cl1 trans-04 d-inline-block p-t-18">Contact support</a>
 				</div>
+
 			</div>
 
 			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/shop_xi/images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by VerityCore Consultancy (Pvt) Ltd
-
-
+				<p class="stext-107 cl6 txt-center storefront-copyright">
+					<span>&copy; 2026 Ganz &amp; Ghost (Pvt) Ltd. All rights reserved.</span>
+					<span>Designed by <a href="https://veritycore.co.zw" target="_blank" rel="noopener noreferrer">VerityCore Consultancy (Pvt) Ltd</a>.</span>
 				</p>
 			</div>
 		</div>
@@ -602,7 +588,7 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 		}
 
 		function formatMoney(value) {
-			return '$' + (parseFloat(value) || 0).toFixed(2);
+			return $('body').data('currency') + ' ' + (parseFloat(value) || 0).toFixed(2);
 		}
 
 		function escapeHtml(value) {
@@ -678,12 +664,20 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 
 			var $form = $(this);
 			var $button = $form.find('.js-contact-submit');
+			var $feedback = $form.find('.js-contact-feedback');
 			var email = $.trim($form.find('[name="email"]').val());
 			var phone = $.trim($form.find('[name="phone"]').val());
 			var message = $.trim($form.find('[name="message"]').val());
 
-			if (!email || !message) {
-				swal('Missing details', 'Please enter your email and message.', 'info');
+			$feedback.removeClass('is-success').text('');
+			if (!$form[0].checkValidity()) {
+				$feedback.text('Please enter a valid email address and a message.');
+				$form[0].reportValidity();
+				return;
+			}
+
+			if (message.length > 5000) {
+				$feedback.text('Your message must be 5000 characters or fewer.');
 				return;
 			}
 
@@ -696,18 +690,15 @@ Copyright &copy;2026 All rights reserved | Ganz&Ghost (Pvt) Ltd . Designed by Ve
 			}, function(data) {
 				$button.prop('disabled', false).text('Submit');
 				$form[0].reset();
-				swal('Message sent', data.message || 'Thank you. Your message has been sent.', 'success');
+				$feedback.addClass('is-success').text(data.message || 'Thank you. Your message has been sent.');
 			}, function() {
 				$button.prop('disabled', false).text('Submit');
-				swal('Contact error', 'Could not send your message. Please try again.', 'error');
+				$feedback.text('Could not send your message. Please try again.');
 			});
 		});
 
 		refreshCartDrawer();
 	</script>
-<!--===============================================================================================-->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKFWBqlKAGCeS1rMVoaNlwyayu0e0YRes"></script>
-	<script src="/assets/shop_xi/js/map-custom.js"></script>
 <!--===============================================================================================-->
 	<script src="/assets/shop_xi/js/main.js"></script>
 
