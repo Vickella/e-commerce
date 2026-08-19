@@ -163,12 +163,54 @@ html:has(.storefront-page) { overflow-x: hidden; }
 .storefront-page .hamburger { height: 48px; transform: none !important; width: 48px; }
 
 @media (max-width: 991px) {
-	.storefront-page .wrap-header-mobile { background: var(--store-surface); height: 91px; }
-	.storefront-home .wrap-header-mobile { background: var(--store-deep); }
-	.storefront-home .logo-mobile a { color: #fff; }
-	.storefront-page .menu-mobile { border-bottom: 1px solid var(--store-line); }
-	.storefront-page .main-menu-m { background: var(--store-deep); }
-	.storefront-page .main-menu-m > li > a { line-height: 2.2; }
+
+    .storefront-page .wrap-header-mobile {
+        background: var(--store-surface);
+        height: 91px;
+    }
+
+    .storefront-home .wrap-header-mobile {
+        background: var(--store-deep);
+    }
+
+    .storefront-home .logo-mobile a {
+        color: #fff;
+    }
+
+    .logo-mobile .storefront-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        height: 100%;
+    }
+
+    .logo-mobile .storefront-brand > span {
+        order: 1;
+        line-height: 1;
+        font-size: 20px;
+    }
+
+    .logo-mobile .storefront-brand > img {
+        order: 2;
+        height: 28px;
+        width: auto;
+        max-width: 90px;
+        object-fit: contain;
+    }
+
+    .storefront-page .menu-mobile {
+        border-bottom: 1px solid var(--store-line);
+    }
+
+    .storefront-page .main-menu-m {
+        background: var(--store-deep);
+    }
+
+    .storefront-page .main-menu-m > li > a {
+        line-height: 2.2;
+    }
 }
 
 @media (max-width: 575px) {
