@@ -206,7 +206,10 @@
 				<nav class="limiter-menu-desktop p-l-45">
 
 					<!-- Logo desktop -->
-					<a href="/" class="storefront-wordmark" aria-label="Ganz and Ghost home">Ganz <span>&amp; Ghost</span></a>
+					<a href="/" class="storefront-wordmark storefront-brand" aria-label="Ganz and Ghost home">
+						<img src="/assets/shop_xi/images/icons/moz-logo.png" alt="" class="storefront-brand-logo">
+						<span>Ganz <span>&amp; Ghost</span></span>
+					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
@@ -250,7 +253,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->
 			<div class="logo-mobile">
-				<a href="/" class="storefront-wordmark" aria-label="Ganz and Ghost home">{% if ecommerce_logo and "/private/" not in ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}Ganz <span>&amp; Ghost</span>{% endif %}</a>
+				<a href="/" class="storefront-wordmark storefront-brand" aria-label="Ganz and Ghost home">{% if ecommerce_logo and "/private/" not in ecommerce_logo %}<img src="{{ ecommerce_logo }}" alt="Ganz &amp; Ghost">{% else %}<img src="/assets/shop_xi/images/icons/moz-logo.png" alt="" class="storefront-brand-logo"><span>Ganz <span>&amp; Ghost</span></span>{% endif %}</a>
 			</div>
 
 			<!-- Icon header -->

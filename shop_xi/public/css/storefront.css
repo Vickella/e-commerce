@@ -44,6 +44,13 @@ html:has(.storefront-page) { overflow-x: hidden; }
 .storefront-wordmark-dark:hover { color: var(--store-accent-dark); }
 .storefront-wordmark img { max-height: 42px; max-width: 180px; object-fit: contain; }
 
+.storefront-brand { align-items: center; display: inline-flex; gap: 10px; }
+.storefront-brand-logo { display: block; height: 48px; object-fit: contain; width: auto; }
+
+@media (max-width: 991px) {
+	.storefront-brand-logo { height: 40px; }
+}
+
 .storefront-page-intro { border-bottom: 1px solid var(--store-line); }
 .storefront-eyebrow { color: var(--store-accent-dark); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
 .storefront-eyebrow-light { color: #f0b18d; }
@@ -150,13 +157,13 @@ html:has(.storefront-page) { overflow-x: hidden; }
 .storefront-page footer a:hover { color: #f0b18d !important; }
 .storefront-page .top-bar,
 .storefront-page .topbar-mobile { display: none !important; }
-.storefront-page .container-menu-desktop { height: 50px; }
-.storefront-page .wrap-menu-desktop { height: 50px; top: 0; }
+.storefront-page .container-menu-desktop { height: 65px; }
+.storefront-page .wrap-menu-desktop { height: 65px; top: 0; }
 .storefront-page .btn-show-menu-mobile { min-height: 48px; min-width: 48px; }
 .storefront-page .hamburger { height: 48px; transform: none !important; width: 48px; }
 
 @media (max-width: 991px) {
-	.storefront-page .wrap-header-mobile { background: var(--store-surface); }
+	.storefront-page .wrap-header-mobile { background: var(--store-surface); height: 91px; }
 	.storefront-home .wrap-header-mobile { background: var(--store-deep); }
 	.storefront-home .logo-mobile a { color: #fff; }
 	.storefront-page .menu-mobile { border-bottom: 1px solid var(--store-line); }
