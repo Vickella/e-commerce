@@ -22,6 +22,15 @@ from shop_xi.utils.session_security import validate_guest_session, generate_gues
 logger = logging.getLogger(__name__)
 
 
+def get_record_value(record: Optional[Any], field: str, default: Any = None) -> Any:
+	"""Safely read a value from either a dict-like record or a document-like object."""
+	if record is None:
+		return default
+	if isinstance(record, dict):
+		return record.get(field, default)
+	return getattr(record, field, default)
+
+
 # ============================================================================
 # SECURITY & VALIDATION FUNCTIONS
 # ============================================================================
@@ -115,8 +124,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 
 		price_map = {}
 		for price in prices:
-			if price.item_code not in price_map:
-				price_map[price.item_code] = flt(price.price_list_rate)
+			item_code = get_record_value(price, "item_code")
+			price_list_rate = get_record_value(price, "price_list_rate")
+			if item_code and item_code not in price_map:
+				price_map[item_code] = flt(price_list_rate)
 
 		missing_codes = [code for code in unique_item_codes if code not in price_map]
 		if missing_codes:
@@ -126,8 +137,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 				filters={"name": ["in", missing_codes]},
 			)
 			for item in items:
-				if item.name not in price_map and item.standard_rate is not None:
-					price_map[item.name] = flt(item.standard_rate)
+				item_name = get_record_value(item, "name")
+				standard_rate = get_record_value(item, "standard_rate")
+				if item_name and item_name not in price_map and standard_rate is not None:
+					price_map[item_name] = flt(standard_rate)
 
 		return price_map
 
@@ -188,7 +201,7 @@ def validate_item_available(item_code: str) -> bool:
 			logger.warning(f"Item not found: {item_code}")
 			return False
 
-		if item.disabled:
+		if get_record_value(item, "disabled"):
 			logger.warning(f"Item is disabled: {item_code}")
 			return False
 
@@ -248,29 +261,35 @@ def build_cart_item_response(cart_item: Any) -> Dict[str, Any]:
 		dict: Complete cart item response with name, qty, price, image
 	"""
 	try:
+		item_code = get_record_value(cart_item, "item")
+		if not item_code:
+			raise ValueError("Cart item is missing the item code")
+
 		# Fetch item details if not already in cart_item
 		item_details = frappe.get_value(
 			"Item",
-			cart_item.item,
+			item_code,
 			["item_name", "image"],
 			as_dict=True,
 		) or {}
 
-		item_name = cart_item.item_name or item_details.get("item_name") or cart_item.item
-		image = cart_item.image or item_details.get("image") or "/assets/shop_xi/images/product-01.jpg"
-		amount = get_cart_amount(cart_item.qty, cart_item.rate)
+		item_name = get_record_value(cart_item, "item_name") or item_details.get("item_name") or item_code
+		image = get_record_value(cart_item, "image") or item_details.get("image") or "/assets/shop_xi/images/product-01.jpg"
+		qty = get_record_value(cart_item, "qty")
+		rate = get_record_value(cart_item, "rate")
+		amount = get_cart_amount(qty, rate)
 
 		return {
-			"item": cart_item.item,
+			"item": item_code,
 			"item_name": item_name,
-			"qty": cint(cart_item.qty),
-			"rate": flt(cart_item.rate),
+			"qty": cint(qty),
+			"rate": flt(rate),
 			"amount": flt(amount),
 			"image": image,
 		}
 
 	except Exception as e:
-		logger.error(f"Error building cart response for item {cart_item.item}: {str(e)}")
+		logger.error(f"Error building cart response for item {get_record_value(cart_item, 'item')}: {str(e)}")
 		raise
 
 
@@ -458,8 +477,8 @@ def get_cart_item(
 			as_dict=True,
 		)
 
-		qty = cint(cart_item.qty) if cart_item else 0
-		rate = flt(cart_item.rate) if cart_item else 0.0
+		qty = cint(get_record_value(cart_item, "qty")) if cart_item else 0
+		rate = flt(get_record_value(cart_item, "rate")) if cart_item else 0.0
 		amount = get_cart_amount(qty, rate)
 
 		cart_count = frappe.db.count("Cart Item", {"cart_owner": identity})
@@ -578,7 +597,8 @@ def add_to_cart(
 	except frappe.PermissionError:
 		raise
 	except Exception as e:
-		logger.error(f"Error adding to cart: {str(e)}")
+		logger.exception("Error adding to cart")
+		frappe.log_error(frappe.get_traceback(), "Shop Xi Cart Add Error")
 		frappe.throw(f"Could not add item to cart: {str(e)}")
 
 
@@ -636,7 +656,8 @@ def delete_from_cart(
 	except frappe.PermissionError:
 		raise
 	except Exception as e:
-		logger.error(f"Error deleting from cart: {str(e)}")
+		logger.exception("Error deleting from cart")
+		frappe.log_error(frappe.get_traceback(), "Shop Xi Cart Delete Error")
 		frappe.throw(f"Could not remove item from cart: {str(e)}")
 
 
@@ -684,9 +705,9 @@ def place_order() -> Dict[str, Any]:
 		# Add items
 		for item in cart_items:
 			invoice.append("items", {
-				"item_code": item.item,
-				"qty": item.qty,
-				"rate": item.rate,
+				"item_code": get_record_value(item, "item"),
+				"qty": get_record_value(item, "qty"),
+				"rate": get_record_value(item, "rate"),
 			})
 
 		# Save and submit invoice
@@ -816,36 +837,43 @@ def merge_cart_on_login(login_manager) -> None:
 			return
 
 		# Get prices for all items (optimize with batch query)
-		item_codes = [item.item for item in guest_items]
+		item_codes = [get_record_value(item, "item") for item in guest_items]
 		price_map = batch_get_item_prices(item_codes)
 
 		# Merge into user's cart
 		for guest_item in guest_items:
+			guest_item_code = get_record_value(guest_item, "item")
+			guest_item_qty = get_record_value(guest_item, "qty")
+			guest_item_name = get_record_value(guest_item, "name")
+			if not guest_item_code:
+				continue
+
 			existing = frappe.db.get_value(
 				"Cart Item",
-				{"cart_owner": user, "item": guest_item.item},
+				{"cart_owner": user, "item": guest_item_code},
 				"name",
 			)
 
 			if existing:
 				# Merge - add quantities
 				doc = frappe.get_doc("Cart Item", existing)
-				doc.qty = cint(doc.qty) + cint(guest_item.qty)
+				doc.qty = cint(get_record_value(doc, "qty")) + cint(guest_item_qty)
 				doc.qty = min(doc.qty, 999)  # Cap at max
 				doc.save()
-				logger.debug(f"Merged quantity for {guest_item.item}: {doc.qty}")
+				logger.debug(f"Merged quantity for {guest_item_code}: {doc.qty}")
 			else:
 				# Copy guest item to user
 				doc = frappe.new_doc("Cart Item")
 				doc.cart_owner = user
-				doc.item = guest_item.item
-				doc.qty = guest_item.qty
-				doc.rate = price_map.get(guest_item.item, 0.0)
+				doc.item = guest_item_code
+				doc.qty = guest_item_qty
+				doc.rate = price_map.get(guest_item_code, 0.0)
 				doc.insert()
-				logger.debug(f"Copied item to user cart: {guest_item.item}")
+				logger.debug(f"Copied item to user cart: {guest_item_code}")
 
 			# Delete guest item
-			frappe.delete_doc("Cart Item", guest_item.name)
+			if guest_item_name:
+				frappe.delete_doc("Cart Item", guest_item_name)
 
 		frappe.db.commit()
 		logger.info(f"Cart merge complete: {len(guest_items)} items merged")

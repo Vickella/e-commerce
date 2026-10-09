@@ -70,8 +70,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 
 		price_map = {}
 		for price in prices:
-			if price.item_code not in price_map:
-				price_map[price.item_code] = frappe.utils.flt(price.price_list_rate)
+			item_code = price.get("item_code") if isinstance(price, dict) else getattr(price, "item_code", None)
+			price_list_rate = price.get("price_list_rate") if isinstance(price, dict) else getattr(price, "price_list_rate", None)
+			if item_code and item_code not in price_map:
+				price_map[item_code] = frappe.utils.flt(price_list_rate)
 
 		missing_codes = [code for code in unique_item_codes if code not in price_map]
 		if missing_codes:
@@ -81,8 +83,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 				filters={"name": ["in", missing_codes]},
 			)
 			for item in items:
-				if item.name not in price_map and item.standard_rate is not None:
-					price_map[item.name] = frappe.utils.flt(item.standard_rate)
+				item_name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+				standard_rate = item.get("standard_rate") if isinstance(item, dict) else getattr(item, "standard_rate", None)
+				if item_name and item_name not in price_map and standard_rate is not None:
+					price_map[item_name] = frappe.utils.flt(standard_rate)
 
 		return price_map
 	except Exception as e:
@@ -167,21 +171,26 @@ def get_product_context(page, group, search, selected_sort, selected_price, page
     )
 
     # PERFORMANCE FIX #4: Batch fetch all prices in ONE query instead of N+1
-    item_codes = [item.name for item in all_items]
+    item_codes = [item.get("name") if isinstance(item, dict) else getattr(item, "name", None) for item in all_items]
     price_map = batch_get_item_prices(item_codes)
 
     for item in all_items:
-        p = price_map.get(item.name)
-        item.selling_price = p if p else None
-        item.custom_price_before = None
+        item_name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+        p = price_map.get(item_name)
+        if isinstance(item, dict):
+            item["selling_price"] = p if p else None
+            item["custom_price_before"] = None
+        else:
+            item.selling_price = p if p else None
+            item.custom_price_before = None
 
     min_price, max_price = get_price_bounds(selected_price)
     if min_price is not None or max_price is not None:
         all_items = [
             item for item in all_items
-            if item.selling_price is not None
-            and (min_price is None or item.selling_price >= min_price)
-            and (max_price is None or item.selling_price <= max_price)
+            if ((item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) is not None)
+            and (min_price is None or (item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) >= min_price)
+            and (max_price is None or (item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) <= max_price)
         ]
 
     all_items = sort_items(all_items, selected_sort)
@@ -193,18 +202,24 @@ def get_product_context(page, group, search, selected_sort, selected_price, page
 
     modal_products = []
     for item in items:
+        item_name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+        item_title = (item.get("item_name") if isinstance(item, dict) else getattr(item, "item_name", None)) or item_name
+        item_description = (item.get("description") if isinstance(item, dict) else getattr(item, "description", None)) or ""
         images = [
             image
-            for image in [item.image, item.custom_image_2]
+            for image in [
+                item.get("image") if isinstance(item, dict) else getattr(item, "image", None),
+                item.get("custom_image_2") if isinstance(item, dict) else getattr(item, "custom_image_2", None),
+            ]
             if image
         ] or ["/assets/shop_xi/images/product-01.jpg"]
 
         modal_products.append(
             {
-                "name": item.name,
-                "title": item.item_name or item.name,
-                "price": item.selling_price,
-                "description": item.description or "",
+                "name": item_name,
+                "title": item_title,
+                "price": getattr(item, "selling_price", None) if not isinstance(item, dict) else item.get("selling_price"),
+                "description": item_description,
                 "images": images,
             }
         )
@@ -289,13 +304,13 @@ def get_visible_item_groups():
     )
     return [
         group for group in item_groups
-        if group.name not in ROOT_ITEM_GROUPS
-        and group.item_group_name not in ROOT_ITEM_GROUPS
+        if (group.get("name") if isinstance(group, dict) else getattr(group, "name", None)) not in ROOT_ITEM_GROUPS
+        and (group.get("item_group_name") if isinstance(group, dict) else getattr(group, "item_group_name", None)) not in ROOT_ITEM_GROUPS
     ]
 
 
 def get_visible_item_group_names():
-    return [group.name for group in get_visible_item_groups()]
+    return [(group.get("name") if isinstance(group, dict) else getattr(group, "name", None)) for group in get_visible_item_groups()]
 
 
 def normalize_group_key(value):
@@ -312,21 +327,23 @@ def resolve_item_group(group):
     group_key = normalize_group_key(group)
 
     for item_group in item_groups:
+        group_name = item_group.get("name") if isinstance(item_group, dict) else getattr(item_group, "name", None)
+        group_label = item_group.get("item_group_name") if isinstance(item_group, dict) else getattr(item_group, "item_group_name", None)
         candidates = {
-            item_group.name,
-            item_group.item_group_name,
+            group_name,
+            group_label,
         }
 
         normalized_candidates = {normalize_group_key(candidate) for candidate in candidates}
 
         if group_key in normalized_candidates:
-            return item_group.name
+            return group_name
 
         if any(
             group_key and (group_key in candidate or candidate in group_key)
             for candidate in normalized_candidates
         ):
-            return item_group.name
+            return group_name
 
     return group
 
@@ -404,11 +421,13 @@ def build_category_links(item_groups, group, common_params):
     ]
 
     for item_group in item_groups:
+        group_name = item_group.get("name") if isinstance(item_group, dict) else getattr(item_group, "name", None)
+        group_label = item_group.get("item_group_name") if isinstance(item_group, dict) else getattr(item_group, "item_group_name", None)
         category_links.append(
             {
-                "label": item_group.item_group_name,
-                "url": build_url({**common_params, "group": item_group.name, "page": 1}),
-                "active": item_group.name == group,
+                "label": group_label,
+                "url": build_url({**common_params, "group": group_name, "page": 1}),
+                "active": group_name == group,
             }
         )
 
@@ -429,12 +448,12 @@ def get_price_bounds(price_filter):
 
 def sort_items(items, selected_sort):
     if selected_sort == "price_asc":
-        return sorted(items, key=lambda item: (item.selling_price is None, item.selling_price or 0))
+        return sorted(items, key=lambda item: ((item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) is None, (item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) or 0))
 
     if selected_sort == "price_desc":
-        return sorted(items, key=lambda item: (item.selling_price is None, -(item.selling_price or 0)))
+        return sorted(items, key=lambda item: ((item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) is None, -((item.get("selling_price") if isinstance(item, dict) else getattr(item, "selling_price", None)) or 0)))
 
     if selected_sort == "newest":
-        return sorted(items, key=lambda item: item.creation, reverse=True)
+        return sorted(items, key=lambda item: item.get("creation") if isinstance(item, dict) else getattr(item, "creation", None), reverse=True)
 
-    return sorted(items, key=lambda item: (item.item_name or item.name or "").lower())
+    return sorted(items, key=lambda item: ((item.get("item_name") if isinstance(item, dict) else getattr(item, "item_name", None)) or (item.get("name") if isinstance(item, dict) else getattr(item, "name", None)) or "").lower())

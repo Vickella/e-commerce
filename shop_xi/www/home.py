@@ -73,8 +73,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 
 		price_map = {}
 		for price in prices:
-			if price.item_code not in price_map:
-				price_map[price.item_code] = frappe.utils.flt(price.price_list_rate)
+			item_code = price.get("item_code") if isinstance(price, dict) else getattr(price, "item_code", None)
+			price_list_rate = price.get("price_list_rate") if isinstance(price, dict) else getattr(price, "price_list_rate", None)
+			if item_code and item_code not in price_map:
+				price_map[item_code] = frappe.utils.flt(price_list_rate)
 
 		missing_codes = [code for code in unique_item_codes if code not in price_map]
 		if missing_codes:
@@ -84,8 +86,10 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 				filters={"name": ["in", missing_codes]},
 			)
 			for item in items:
-				if item.name not in price_map and item.standard_rate is not None:
-					price_map[item.name] = frappe.utils.flt(item.standard_rate)
+				item_name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+				standard_rate = item.get("standard_rate") if isinstance(item, dict) else getattr(item, "standard_rate", None)
+				if item_name and item_name not in price_map and standard_rate is not None:
+					price_map[item_name] = frappe.utils.flt(standard_rate)
 
 		return price_map
 	except Exception as e:
@@ -123,8 +127,8 @@ def get_home_category_links(limit=50):
 	categories = get_visible_item_groups(limit=limit)
 	return [{"label": "All Products", "url": "/products"}] + [
 		{
-			"label": category.item_group_name or category.name,
-			"url": "/products?" + urlencode({"group": category.name}),
+			"label": (category.get("item_group_name") if isinstance(category, dict) else getattr(category, "item_group_name", None)) or (category.get("name") if isinstance(category, dict) else getattr(category, "name", None)),
+			"url": "/products?" + urlencode({"group": category.get("name") if isinstance(category, dict) else getattr(category, "name", None)}),
 		}
 		for category in categories
 	]
@@ -176,13 +180,18 @@ def get_trendy_items(limit=8):
 			return []
 
 		# PERFORMANCE FIX #4: Batch fetch all prices in ONE query instead of N+1
-		item_codes = [item.name for item in items]
+		item_codes = [item.get("name") if isinstance(item, dict) else getattr(item, "name", None) for item in items]
 		price_map = batch_get_item_prices(item_codes)
 
 		for item in items:
-			price = price_map.get(item.name)
-			item.selling_price = price if price else None
-			item.custom_price_before = None
+			item_name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+			price = price_map.get(item_name)
+			if isinstance(item, dict):
+				item["selling_price"] = price if price else None
+				item["custom_price_before"] = None
+			else:
+				item.selling_price = price if price else None
+				item.custom_price_before = None
 
 		return items
 
@@ -217,8 +226,8 @@ def get_visible_item_groups(limit=None):
 	item_groups = frappe.get_all(**query)
 	return [
 		group for group in item_groups
-		if group.name not in ROOT_ITEM_GROUPS
-		and group.item_group_name not in ROOT_ITEM_GROUPS
+		if (group.get("name") if isinstance(group, dict) else getattr(group, "name", None)) not in ROOT_ITEM_GROUPS
+		and (group.get("item_group_name") if isinstance(group, dict) else getattr(group, "item_group_name", None)) not in ROOT_ITEM_GROUPS
 	]
 
 
@@ -243,23 +252,26 @@ def get_front_card_item_groups(fieldname, limit=None):
 	item_groups = frappe.get_all(**query)
 	return [
 		group for group in item_groups
-		if group.name not in ROOT_ITEM_GROUPS
-		and group.item_group_name not in ROOT_ITEM_GROUPS
+		if (group.get("name") if isinstance(group, dict) else getattr(group, "name", None)) not in ROOT_ITEM_GROUPS
+		and (group.get("item_group_name") if isinstance(group, dict) else getattr(group, "item_group_name", None)) not in ROOT_ITEM_GROUPS
 	]
 
 
 def get_category_card(group, card_size):
+	group_name = group.get("name") if isinstance(group, dict) else getattr(group, "name", None)
+	group_label = group.get("item_group_name") if isinstance(group, dict) else getattr(group, "item_group_name", None)
+	group_image = group.get("image") if isinstance(group, dict) else getattr(group, "image", None)
 	return {
-		"label": group.item_group_name or group.name,
-		"image": group.image,
-		"url": "/products?" + urlencode({"group": group.name}),
+		"label": group_label or group_name,
+		"image": group_image,
+		"url": "/products?" + urlencode({"group": group_name}),
 		"info": "Shop Collection",
 		"card_size": card_size,
 	}
 
 
 def get_visible_item_group_names():
-	return [group.name for group in get_visible_item_groups()]
+	return [group.get("name") if isinstance(group, dict) else getattr(group, "name", None) for group in get_visible_item_groups()]
 
 
 def get_modal_products(items):
@@ -269,18 +281,18 @@ def get_modal_products(items):
 		images = [
 			image
 			for image in [
-				item.image,
-				item.get("custom_image_2"),
+				item.get("image") if isinstance(item, dict) else getattr(item, "image", None),
+				item.get("custom_image_2") if isinstance(item, dict) else getattr(item, "custom_image_2", None),
 			]
 			if image
 		] or ["/assets/shop_xi/images/product-01.jpg"]
 
 		products.append(
 			{
-				"name": item.name,
-				"title": item.item_name or item.name,
-				"price": item.selling_price,
-				"description": item.description or "",
+				"name": item.get("name") if isinstance(item, dict) else getattr(item, "name", None),
+				"title": (item.get("item_name") if isinstance(item, dict) else getattr(item, "item_name", None)) or (item.get("name") if isinstance(item, dict) else getattr(item, "name", None)),
+				"price": getattr(item, "selling_price", None) if not isinstance(item, dict) else item.get("selling_price"),
+				"description": (item.get("description") if isinstance(item, dict) else getattr(item, "description", None)) or "",
 				"images": images,
 			}
 		)

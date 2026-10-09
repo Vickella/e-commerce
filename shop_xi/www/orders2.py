@@ -100,10 +100,10 @@ def get_invoice_items(invoice_name):
 
     return [
         {
-            "item": item.item_name or item.item_code,
-            "qty": item.qty,
-            "rate": money(item.rate),
-            "total": money(item.amount),
+            "item": (item.get("item_name") if isinstance(item, dict) else getattr(item, "item_name", None)) or (item.get("item_code") if isinstance(item, dict) else getattr(item, "item_code", None)),
+            "qty": item.get("qty") if isinstance(item, dict) else getattr(item, "qty", 0),
+            "rate": money(item.get("rate") if isinstance(item, dict) else getattr(item, "rate", 0)),
+            "total": money(item.get("amount") if isinstance(item, dict) else getattr(item, "amount", 0)),
         }
         for item in items
     ]
