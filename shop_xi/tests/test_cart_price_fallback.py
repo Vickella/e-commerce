@@ -202,6 +202,46 @@ class TestCartPriceFallback(unittest.TestCase):
         self.assertEqual(cart_doc.cart_owner, "customer@example.com")
         self.assertEqual(cart_doc.insert_options, {"ignore_permissions": True})
 
+    def test_guest_adds_thirteen_items_with_doctype_permissions_bypassed(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "Guest"
+        module.validate_item_available = lambda item_code: True
+        module.get_item_selling_price = lambda item_code: 340.0
+        module.frappe.db.get_value = lambda *args, **kwargs: None
+
+        class CartDoc:
+            name = "CART-ITEM-13"
+
+            def insert(self, **kwargs):
+                self.insert_options = kwargs
+                return self
+
+        cart_doc = CartDoc()
+        module.frappe.new_doc = lambda doctype: cart_doc
+
+        result = module.add_to_cart("Lacoste", qty=13, guest_id="audit-guest")
+
+        self.assertEqual(result["qty"], 13)
+        self.assertEqual(result["rate"], 340.0)
+        self.assertEqual(result["amount"], 4420.0)
+        self.assertEqual(cart_doc.cart_owner, "audit-guest")
+        self.assertEqual(cart_doc.insert_options, {"ignore_permissions": True})
+
+    def test_guest_cart_load_returns_quantity_and_total(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "Guest"
+        module.frappe.get_all = lambda doctype, **kwargs: [
+            {"item": "Lacoste", "item_name": "Lacoste", "qty": 13, "rate": 340.0, "image": None}
+        ] if doctype == "Cart Item" else []
+        module.frappe.get_value = lambda *args, **kwargs: {"item_name": "Lacoste", "image": "/files/lacoste.jpg"}
+
+        result = module.get_cart_items(guest_id="audit-guest")
+
+        self.assertEqual(result["cart_count"], 1)
+        self.assertEqual(result["items"][0]["qty"], 13)
+        self.assertEqual(result["items"][0]["amount"], 4420.0)
+        self.assertEqual(result["total"], 4420.0)
+
     def test_add_to_cart_bypasses_doctype_permissions_when_updating_owned_cart(self):
         module = self.load_cart_module()
         module.frappe.session.user = "customer@example.com"
