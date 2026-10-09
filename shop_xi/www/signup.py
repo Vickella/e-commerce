@@ -6,6 +6,7 @@ from frappe.auth import LoginManager
 from frappe.rate_limiter import rate_limit
 from frappe.utils import validate_email_address
 
+from shop_xi.www.cart import merge_cart_on_login
 from shop_xi.www.login import sanitize_redirect
 
 
@@ -60,6 +61,7 @@ def create_account(full_name, email, password, confirm_password, redirect_to=Non
 
 		frappe.local.login_manager = LoginManager()
 		frappe.local.login_manager.login_as(user.name)
+		merge_cart_on_login(frappe.local.login_manager)
 		frappe.db.commit()
 
 		return {

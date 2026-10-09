@@ -30,7 +30,8 @@ def get_identity(guest_id: Optional[str] = None, session_hash: Optional[str] = N
 	"""
 	Get and validate the identity of the current user (guest or authenticated).
 
-	SECURITY FIX #1: Validates guest session tokens to prevent cart spoofing.
+	For signed-in users, the authenticated ERPNext user must win. Guest cart IDs are
+	used only when the browser session is still anonymous.
 
 	Args:
 		guest_id: The guest identifier (for guest users)
@@ -45,14 +46,13 @@ def get_identity(guest_id: Optional[str] = None, session_hash: Optional[str] = N
 	"""
 	user = frappe.session.user
 
-	# Authenticated user - no session validation needed
+	# Authenticated user should always own the cart once logged in.
 	if user != "Guest":
 		return user
 
 	# Guest user - requires session validation
 	if guest_id:
 		if session_hash:
-			# CRITICAL FIX: Validate session token
 			if not validate_guest_session(session_hash, guest_id):
 				logger.warning(f"Invalid guest session attempt: {guest_id[:8]}...")
 				frappe.throw(
@@ -91,8 +91,8 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 	"""
 	Get selling prices for multiple items in a single database query.
 
-	PERFORMANCE FIX #4: Prevents N+1 queries when loading items.
-	Fetches all prices for a batch of items instead of querying per-item.
+	Falls back to the Item's standard rate when an Item Price record is missing or
+	when the project does not populate the selling flag consistently.
 
 	Args:
 		item_codes: List of item codes to fetch prices for
@@ -103,23 +103,31 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 	if not item_codes:
 		return {}
 
+	unique_item_codes = list(dict.fromkeys(item_codes))
+
 	try:
-		# Fetch all matching prices in single query
 		prices = frappe.get_all(
 			"Item Price",
 			fields=["item_code", "price_list_rate"],
-			filters={
-				"item_code": ["in", item_codes],
-				"selling": 1
-			},
-			order_by="modified desc"
+			filters={"item_code": ["in", unique_item_codes]},
+			order_by="modified desc",
 		)
 
-		# Create map of item_code -> price (latest price wins)
 		price_map = {}
 		for price in prices:
 			if price.item_code not in price_map:
 				price_map[price.item_code] = flt(price.price_list_rate)
+
+		missing_codes = [code for code in unique_item_codes if code not in price_map]
+		if missing_codes:
+			items = frappe.get_all(
+				"Item",
+				fields=["name", "standard_rate"],
+				filters={"name": ["in", missing_codes]},
+			)
+			for item in items:
+				if item.name not in price_map and item.standard_rate is not None:
+					price_map[item.name] = flt(item.standard_rate)
 
 		return price_map
 
@@ -132,7 +140,8 @@ def get_item_selling_price(item_code: str) -> float:
 	"""
 	Get the selling price for a single item.
 
-	Uses optimized batch query when possible.
+	Uses the item price record when available, but falls back to the Item's
+	standard rate so carts still work when minimal price data is configured.
 
 	Args:
 		item_code: The item code to get price for
@@ -144,7 +153,17 @@ def get_item_selling_price(item_code: str) -> float:
 		return 0.0
 
 	price_map = batch_get_item_prices([item_code])
-	return price_map.get(item_code, 0.0)
+	if item_code in price_map:
+		return flt(price_map[item_code])
+
+	try:
+		standard_rate = frappe.db.get_value("Item", item_code, "standard_rate")
+		if standard_rate is not None:
+			return flt(standard_rate)
+	except Exception as e:
+		logger.error(f"Error fetching standard rate for item {item_code}: {str(e)}")
+
+	return 0.0
 
 
 def validate_item_available(item_code: str) -> bool:
@@ -772,10 +791,16 @@ def merge_cart_on_login(login_manager) -> None:
 	"""
 	try:
 		user = login_manager.user
-		guest_id = frappe.request.cookies.get("guest_id")
+		if user == "Guest":
+			return
 
-		# Skip if no guest cart or user is guest
-		if not guest_id or user == "Guest" or guest_id == user:
+		request = getattr(frappe, "request", None)
+		guest_id = None
+		if request:
+			guest_id = request.cookies.get("guest_id")
+		if not guest_id:
+			guest_id = frappe.form_dict.get("guest_id") if getattr(frappe, "form_dict", None) else None
+		if not guest_id or guest_id == user:
 			return
 
 		logger.info(f"Merging guest cart {guest_id[:8]}... to user {user}")

@@ -10,6 +10,8 @@ from frappe.utils.html_utils import get_icon_html
 from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys, redirect_post_login
 from frappe.utils.password import get_decrypted_password
 
+from shop_xi.www.cart import merge_cart_on_login
+
 
 no_cache = True
 
@@ -21,6 +23,7 @@ def custom_login(email, password, redirect_to=None):
 		login_manager = LoginManager()
 		login_manager.authenticate(user=email, pwd=password)
 		login_manager.post_login()
+		merge_cart_on_login(login_manager)
 		frappe.db.commit()
 
 		return {

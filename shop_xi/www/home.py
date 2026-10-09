@@ -49,6 +49,9 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 	"""
 	Fetch prices for multiple items in ONE database query.
 
+	Falls back to Item.standard_rate when the item has no Item Price records or when
+	the price list does not use the selling flag consistently.
+
 	Args:
 		item_codes: List of item codes
 
@@ -58,21 +61,31 @@ def batch_get_item_prices(item_codes: List[str]) -> Dict[str, float]:
 	if not item_codes:
 		return {}
 
+	unique_item_codes = list(dict.fromkeys(item_codes))
+
 	try:
 		prices = frappe.get_all(
 			"Item Price",
 			fields=["item_code", "price_list_rate"],
-			filters={
-				"item_code": ["in", item_codes],
-				"selling": 1
-			},
-			order_by="modified desc"
+			filters={"item_code": ["in", unique_item_codes]},
+			order_by="modified desc",
 		)
 
 		price_map = {}
 		for price in prices:
 			if price.item_code not in price_map:
 				price_map[price.item_code] = frappe.utils.flt(price.price_list_rate)
+
+		missing_codes = [code for code in unique_item_codes if code not in price_map]
+		if missing_codes:
+			items = frappe.get_all(
+				"Item",
+				fields=["name", "standard_rate"],
+				filters={"name": ["in", missing_codes]},
+			)
+			for item in items:
+				if item.name not in price_map and item.standard_rate is not None:
+					price_map[item.name] = frappe.utils.flt(item.standard_rate)
 
 		return price_map
 	except Exception as e:
