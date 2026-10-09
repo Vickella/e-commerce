@@ -350,7 +350,7 @@ def get_checkout_customer(user: str) -> str:
 		if customer_doc.meta.has_field("territory"):
 			customer_doc.territory = get_default_territory()
 
-		customer_doc.insert()
+		customer_doc.insert(ignore_permissions=True)
 		return customer_doc.name
 
 	except Exception as e:
@@ -717,7 +717,8 @@ def place_order() -> Dict[str, Any]:
 			})
 
 		# Save and submit invoice
-		invoice.insert()
+		invoice.flags.ignore_permissions = True
+		invoice.insert(ignore_permissions=True)
 		invoice.submit()
 
 		# Clear cart
@@ -739,6 +740,7 @@ def place_order() -> Dict[str, Any]:
 		# Order validation failed (bad items, quantities, etc)
 		frappe.db.rollback()
 		logger.warning(f"Order validation failed for {user}: {str(e)}")
+		frappe.log_error(frappe.get_traceback(), "Shop Xi Checkout Validation Error")
 		return {
 			"status": "error",
 			"message": f"Order validation failed: {str(e)}",

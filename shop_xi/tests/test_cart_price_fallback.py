@@ -242,6 +242,66 @@ class TestCartPriceFallback(unittest.TestCase):
         self.assertEqual(result["items"][0]["amount"], 4420.0)
         self.assertEqual(result["total"], 4420.0)
 
+    def test_website_user_checkout_bypasses_invoice_permissions(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "customer@example.com"
+        module.frappe.get_all = lambda doctype, **kwargs: [
+            {"item": "Adizero", "qty": 1, "rate": 420.0}
+        ] if doctype == "Cart Item" else []
+        module.get_checkout_customer = lambda user: "Customer-1"
+        module.frappe.db.delete = lambda *args, **kwargs: None
+        module.frappe.db.commit = lambda: None
+        module.frappe.db.rollback = lambda: None
+
+        class Invoice:
+            name = "SINV-TEST-1"
+
+            def __init__(self):
+                self.flags = types.SimpleNamespace(ignore_permissions=False)
+                self.items = []
+
+            def append(self, field, row):
+                self.items.append(row)
+
+            def insert(self, **kwargs):
+                self.insert_options = kwargs
+                self.ignore_permissions_when_inserted = self.flags.ignore_permissions
+
+            def submit(self):
+                self.ignore_permissions_when_submitted = self.flags.ignore_permissions
+
+        invoice = Invoice()
+        module.frappe.new_doc = lambda doctype: invoice
+
+        result = module.place_order()
+
+        self.assertEqual(result["status"], "success")
+        self.assertEqual(invoice.insert_options, {"ignore_permissions": True})
+        self.assertTrue(invoice.ignore_permissions_when_inserted)
+        self.assertTrue(invoice.ignore_permissions_when_submitted)
+
+    def test_checkout_customer_creation_bypasses_permissions(self):
+        module = self.load_cart_module()
+        module.get_user_email = lambda user: user
+        module.frappe.db.get_value = lambda *args, **kwargs: None
+        module.frappe.db.exists = lambda *args, **kwargs: False
+        module.frappe.get_doc = lambda *args, **kwargs: types.SimpleNamespace(full_name="Customer Name")
+
+        class Customer:
+            name = "Customer-1"
+            meta = types.SimpleNamespace(has_field=lambda field: False)
+
+            def insert(self, **kwargs):
+                self.insert_options = kwargs
+
+        customer = Customer()
+        module.frappe.new_doc = lambda doctype: customer
+
+        result = module.get_checkout_customer("customer@example.com")
+
+        self.assertEqual(result, "Customer-1")
+        self.assertEqual(customer.insert_options, {"ignore_permissions": True})
+
     def test_add_to_cart_bypasses_doctype_permissions_when_updating_owned_cart(self):
         module = self.load_cart_module()
         module.frappe.session.user = "customer@example.com"
