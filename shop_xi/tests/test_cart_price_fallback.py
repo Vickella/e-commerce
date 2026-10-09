@@ -175,6 +175,77 @@ class TestCartPriceFallback(unittest.TestCase):
             [("Shop Xi Cart Login Merge Error", "test traceback")],
         )
 
+    def test_add_to_cart_bypasses_doctype_permissions_for_owned_customer_cart(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "customer@example.com"
+        module.validate_item_available = lambda item_code: True
+        module.get_item_selling_price = lambda item_code: 99.5
+        module.frappe.db.get_value = lambda *args, **kwargs: None
+
+        class CartDoc:
+            name = "CART-ITEM-1"
+            cart_owner = None
+            item = None
+            qty = 0
+            rate = 0
+
+            def insert(self, **kwargs):
+                self.insert_options = kwargs
+                return self
+
+        cart_doc = CartDoc()
+        module.frappe.new_doc = lambda doctype: cart_doc
+
+        result = module.add_to_cart("SKU-1", qty=2)
+
+        self.assertEqual(result["status"], "created")
+        self.assertEqual(cart_doc.cart_owner, "customer@example.com")
+        self.assertEqual(cart_doc.insert_options, {"ignore_permissions": True})
+
+    def test_add_to_cart_bypasses_doctype_permissions_when_updating_owned_cart(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "customer@example.com"
+        module.validate_item_available = lambda item_code: True
+        module.get_item_selling_price = lambda item_code: 99.5
+        module.frappe.db.get_value = lambda *args, **kwargs: "CART-ITEM-1"
+
+        class CartDoc:
+            name = "CART-ITEM-1"
+            cart_owner = "customer@example.com"
+            item = "SKU-1"
+            qty = 1
+            rate = 99.5
+
+            def save(self, **kwargs):
+                self.save_options = kwargs
+                return self
+
+        cart_doc = CartDoc()
+        module.frappe.get_doc = lambda *args, **kwargs: cart_doc
+
+        result = module.add_to_cart("SKU-1", qty=2)
+
+        self.assertEqual(result["status"], "updated")
+        self.assertEqual(cart_doc.save_options, {"ignore_permissions": True})
+
+    def test_delete_from_cart_bypasses_doctype_permissions_after_owner_check(self):
+        module = self.load_cart_module()
+        module.frappe.session.user = "customer@example.com"
+        module.frappe.db.get_value = lambda *args, **kwargs: {
+            "name": "CART-ITEM-1",
+            "cart_owner": "customer@example.com",
+        }
+        deleted = []
+        module.frappe.delete_doc = lambda doctype, name, **kwargs: deleted.append((doctype, name, kwargs))
+
+        result = module.delete_from_cart("SKU-1")
+
+        self.assertEqual(result["status"], "deleted")
+        self.assertEqual(
+            deleted,
+            [("Cart Item", "CART-ITEM-1", {"ignore_permissions": True})],
+        )
+
     def test_merge_cart_on_login_moves_guest_items_to_user_cart(self):
         module = self.load_cart_module()
         module.frappe.session.user = "test@example.com"
@@ -197,10 +268,12 @@ class TestCartPriceFallback(unittest.TestCase):
                 self.cart_owner = None
                 self.inserted = False
 
-            def save(self):
+            def save(self, **kwargs):
+                self.save_options = kwargs
                 return None
 
-            def insert(self):
+            def insert(self, **kwargs):
+                self.insert_options = kwargs
                 self.inserted = True
                 return self
 
@@ -212,7 +285,7 @@ class TestCartPriceFallback(unittest.TestCase):
             return doc
 
         module.frappe.new_doc = fake_new_doc
-        module.frappe.delete_doc = lambda doctype, name: None
+        module.frappe.delete_doc = lambda doctype, name, **kwargs: None
         module.frappe.db.commit = lambda: None
         module.frappe.db.rollback = lambda: None
         module.frappe.request = types.SimpleNamespace(cookies={"guest_id": "guest-123"})
@@ -223,6 +296,7 @@ class TestCartPriceFallback(unittest.TestCase):
         module.merge_cart_on_login(LoginManager())
         self.assertEqual(created[0].item, "SKU-1")
         self.assertEqual(created[0].qty, 2)
+        self.assertEqual(created[0].insert_options, {"ignore_permissions": True})
 
 
 if __name__ == "__main__":

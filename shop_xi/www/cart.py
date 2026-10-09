@@ -568,7 +568,7 @@ def add_to_cart(
 				doc.qty = cint(doc.qty) + qty
 				doc.qty = min(doc.qty, 999)  # Cap at max
 
-			doc.save()  # No ignore_permissions - ownership check already done
+			doc.save(ignore_permissions=True)
 
 			logger.info(f"Updated cart item: {identity} - {item_code} qty={doc.qty}")
 
@@ -588,7 +588,7 @@ def add_to_cart(
 		doc.qty = qty
 		doc.rate = selling_price
 
-		doc.insert()  # No ignore_permissions - new item for this owner
+		doc.insert(ignore_permissions=True)
 
 		logger.info(f"Added to cart: {identity} - {item_code} qty={qty}")
 
@@ -644,9 +644,9 @@ def delete_from_cart(
 
 		if existing:
 			# SECURITY FIX #2: Verify ownership
-			assert_cart_ownership(identity, existing.cart_owner)
+			assert_cart_ownership(identity, get_record_value(existing, "cart_owner"))
 
-			frappe.delete_doc("Cart Item", existing.name)
+			frappe.delete_doc("Cart Item", get_record_value(existing, "name"), ignore_permissions=True)
 			logger.info(f"Removed from cart: {identity} - {item_code}")
 		else:
 			logger.debug(f"Item not in cart: {identity} - {item_code}")
@@ -865,7 +865,7 @@ def merge_cart_on_login(login_manager) -> None:
 				doc = frappe.get_doc("Cart Item", existing)
 				doc.qty = cint(get_record_value(doc, "qty")) + cint(guest_item_qty)
 				doc.qty = min(doc.qty, 999)  # Cap at max
-				doc.save()
+				doc.save(ignore_permissions=True)
 				logger.debug(f"Merged quantity for {guest_item_code}: {doc.qty}")
 			else:
 				# Copy guest item to user
@@ -874,12 +874,12 @@ def merge_cart_on_login(login_manager) -> None:
 				doc.item = guest_item_code
 				doc.qty = guest_item_qty
 				doc.rate = price_map.get(guest_item_code, 0.0)
-				doc.insert()
+				doc.insert(ignore_permissions=True)
 				logger.debug(f"Copied item to user cart: {guest_item_code}")
 
 			# Delete guest item
 			if guest_item_name:
-				frappe.delete_doc("Cart Item", guest_item_name)
+				frappe.delete_doc("Cart Item", guest_item_name, ignore_permissions=True)
 
 		frappe.db.commit()
 		logger.info(f"Cart merge complete: {len(guest_items)} items merged")
