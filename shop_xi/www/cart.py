@@ -31,6 +31,16 @@ def get_record_value(record: Optional[Any], field: str, default: Any = None) -> 
 	return getattr(record, field, default)
 
 
+def log_cart_error(title: str) -> None:
+	"""Persist the active cart API exception in Error Log and the app logger."""
+	traceback = frappe.get_traceback()
+	logger.error("%s\n%s", title, traceback)
+	try:
+		frappe.log_error(traceback, title)
+	except Exception:
+		logger.exception("Could not write cart failure to Frappe Error Log: %s", title)
+
+
 # ============================================================================
 # SECURITY & VALIDATION FUNCTIONS
 # ============================================================================
@@ -410,7 +420,7 @@ def get_cart_count(guest_id: Optional[str] = None, session_hash: Optional[str] =
 		return {"cart_count": count}
 
 	except Exception as e:
-		logger.error(f"Error getting cart count: {str(e)}")
+		log_cart_error("Shop Xi Cart Count Error")
 		return {"cart_count": 0, "error": "Could not retrieve cart count"}
 
 
@@ -447,7 +457,7 @@ def get_cart_items(guest_id: Optional[str] = None, session_hash: Optional[str] =
 		}
 
 	except Exception as e:
-		logger.error(f"Error retrieving cart items: {str(e)}")
+		log_cart_error("Shop Xi Cart Read Error")
 		frappe.throw("Could not retrieve cart items")
 
 
@@ -492,7 +502,7 @@ def get_cart_item(
 		}
 
 	except Exception as e:
-		logger.error(f"Error getting cart item {item_code}: {str(e)}")
+		log_cart_error("Shop Xi Cart Item Read Error")
 		frappe.throw("Could not retrieve cart item")
 
 
@@ -592,13 +602,10 @@ def add_to_cart(
 			"cart_count": frappe.db.count("Cart Item", {"cart_owner": identity}),
 		}
 
-	except frappe.ValidationError:
-		raise
-	except frappe.PermissionError:
-		raise
 	except Exception as e:
-		logger.exception("Error adding to cart")
-		frappe.log_error(frappe.get_traceback(), "Shop Xi Cart Add Error")
+		log_cart_error("Shop Xi Cart Add Error")
+		if isinstance(e, (frappe.ValidationError, frappe.PermissionError, frappe.SessionExpiredError)):
+			raise
 		frappe.throw(f"Could not add item to cart: {str(e)}")
 
 
@@ -653,11 +660,10 @@ def delete_from_cart(
 			"cart_count": frappe.db.count("Cart Item", {"cart_owner": identity}),
 		}
 
-	except frappe.PermissionError:
-		raise
 	except Exception as e:
-		logger.exception("Error deleting from cart")
-		frappe.log_error(frappe.get_traceback(), "Shop Xi Cart Delete Error")
+		log_cart_error("Shop Xi Cart Delete Error")
+		if isinstance(e, (frappe.ValidationError, frappe.PermissionError, frappe.SessionExpiredError)):
+			raise
 		frappe.throw(f"Could not remove item from cart: {str(e)}")
 
 
@@ -770,7 +776,7 @@ def get_cart_context(guest_id: Optional[str] = None, session_hash: Optional[str]
 		) if identity else []
 
 	except Exception as e:
-		logger.error(f"Error getting cart context: {str(e)}")
+		log_cart_error("Shop Xi Cart Context Error")
 		frappe.form_dict.cart = []
 
 
@@ -791,7 +797,7 @@ def get_context(context: Dict[str, Any]) -> Dict[str, Any]:
 		return context
 
 	except Exception as e:
-		logger.error(f"Error in get_context: {str(e)}")
+		log_cart_error("Shop Xi Cart Page Error")
 		context.cart = []
 		return context
 
@@ -879,6 +885,6 @@ def merge_cart_on_login(login_manager) -> None:
 		logger.info(f"Cart merge complete: {len(guest_items)} items merged")
 
 	except Exception as e:
-		logger.error(f"Error merging cart on login: {str(e)}")
+		log_cart_error("Shop Xi Cart Login Merge Error")
 		frappe.db.rollback()
 		# Don't raise - don't block user login if cart merge fails

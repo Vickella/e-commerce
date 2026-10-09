@@ -41,6 +41,7 @@ class FakeFrappe(types.SimpleNamespace):
     session = types.SimpleNamespace(user="Guest")
     form_dict = {}
     local = types.SimpleNamespace(request=None)
+    error_logs = []
 
     @staticmethod
     def generate_hash(length=32):
@@ -58,6 +59,14 @@ class FakeFrappe(types.SimpleNamespace):
     @staticmethod
     def throw(msg, exc=None):
         raise (exc or ValueError)(msg)
+
+    @staticmethod
+    def get_traceback():
+        return "test traceback"
+
+    @staticmethod
+    def log_error(message, title=None):
+        FakeFrappe.error_logs.append((title, message))
 
     @staticmethod
     def get_all(doctype, fields=None, filters=None, order_by=None, limit_page_length=None):
@@ -130,6 +139,41 @@ class TestCartPriceFallback(unittest.TestCase):
         module = self.load_cart_module()
         module.frappe.session.user = "Guest"
         self.assertEqual(module.get_identity("guest-123"), "guest-123")
+
+    def test_add_to_cart_logs_validation_failures_to_error_log(self):
+        module = self.load_cart_module()
+        module.frappe.error_logs.clear()
+        module.get_identity = lambda *args, **kwargs: "test@example.com"
+
+        def fail_validation(qty):
+            raise module.frappe.ValidationError("invalid quantity")
+
+        module.validate_qty = fail_validation
+
+        with self.assertRaises(module.frappe.ValidationError):
+            module.add_to_cart("SKU-1")
+
+        self.assertEqual(
+            module.frappe.error_logs,
+            [("Shop Xi Cart Add Error", "test traceback")],
+        )
+
+    def test_merge_cart_logs_failures_to_error_log(self):
+        module = self.load_cart_module()
+        module.frappe.error_logs.clear()
+        module.frappe.request = types.SimpleNamespace(cookies={"guest_id": "guest-123"})
+        module.frappe.get_all = lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("database read failed"))
+        module.frappe.db.rollback = lambda: None
+
+        class LoginManager:
+            user = "test@example.com"
+
+        module.merge_cart_on_login(LoginManager())
+
+        self.assertEqual(
+            module.frappe.error_logs,
+            [("Shop Xi Cart Login Merge Error", "test traceback")],
+        )
 
     def test_merge_cart_on_login_moves_guest_items_to_user_cart(self):
         module = self.load_cart_module()
