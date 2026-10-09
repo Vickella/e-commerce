@@ -235,6 +235,53 @@
 			margin: 0;
 		}
 
+		.paynow-methods {
+			display: grid;
+			gap: 8px;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			margin-top: 18px;
+		}
+
+		.paynow-method {
+			align-items: flex-start;
+			border: 1px solid #e6e6e6;
+			border-radius: 4px;
+			cursor: pointer;
+			display: flex;
+			gap: 9px;
+			min-height: 64px;
+			padding: 12px;
+		}
+
+		.paynow-method:has(input:checked) {
+			border-color: #717fe0;
+		}
+
+		.paynow-method:has(input:disabled) {
+			cursor: not-allowed;
+			opacity: 0.55;
+		}
+
+		.paynow-method input {
+			margin-top: 3px;
+		}
+
+		.paynow-method-copy {
+			color: #333;
+			display: flex;
+			flex-direction: column;
+			font-family: Poppins-Medium;
+			font-size: 13px;
+			line-height: 1.4;
+		}
+
+		.paynow-method-note {
+			color: #777;
+			font-family: Poppins-Regular;
+			font-size: 11px;
+			margin-top: 3px;
+		}
+
 		.paynow-input-label {
 			color: #222;
 			display: block;
@@ -296,6 +343,10 @@
 
 			.order-modal-dialog {
 				margin: 75px 15px 20px;
+			}
+
+			.paynow-methods {
+				grid-template-columns: 1fr;
 			}
 		}
 
@@ -551,6 +602,7 @@
 					data-order-number="Order #{{ order.name }}"
 					data-order-invoice="{{ order.name }}"
 					data-order-total="{{ order.total }}"
+					data-payment-total="{{ order.outstanding_total }}"
 					data-order-amount="{{ order.amount }}"
 				>
 					Pay Now
@@ -620,7 +672,7 @@
 					<div class="paynow-panel">
 						<span class="paynow-brand">Pay with Paynow Gateway</span>
 						<p class="paynow-copy">
-							Enter your mobile money number to start payment for
+							Choose how to pay for
 							<strong class="js-paynow-order-number">this order</strong>.
 						</p>
 						<p class="paynow-copy">
@@ -628,17 +680,30 @@
 						</p>
 					</div>
 
-					<label class="paynow-input-label" for="paynow-mobile-number">Mobile number</label>
-					<input
-						class="paynow-input"
-						id="paynow-mobile-number"
-						type="tel"
-						placeholder="e.g. 0771234567"
-						autocomplete="tel"
-					>
+					<div class="paynow-methods" role="radiogroup" aria-label="Payment method">
+						<label class="paynow-method" for="paynow-method-mobile">
+							<input id="paynow-method-mobile" name="paynow-method" type="radio" value="mobile" checked>
+							<span class="paynow-method-copy">Mobile Money<span class="paynow-method-note">EcoCash prompt to your phone</span></span>
+						</label>
+						<label class="paynow-method" for="paynow-method-visa">
+							<input id="paynow-method-visa" name="paynow-method" type="radio" value="visa" disabled>
+							<span class="paynow-method-copy">Visa / Mastercard<span class="paynow-method-note js-visa-availability">Merchant approval required</span></span>
+						</label>
+					</div>
+
+					<div class="js-paynow-mobile-fields">
+						<label class="paynow-input-label" for="paynow-mobile-number">Mobile number</label>
+						<input
+							class="paynow-input"
+							id="paynow-mobile-number"
+							type="tel"
+							placeholder="e.g. 0771234567"
+							autocomplete="tel"
+						>
+					</div>
 
 					<button class="paynow-submit js-confirm-paynow" type="button">
-						Pay with Paynow
+						Pay with Mobile Money
 					</button>
 				</div>
 			</div>
@@ -987,22 +1052,56 @@
 			var $button = $(this);
 			var orderNumber = $button.attr('data-order-number') || 'this order';
 			var invoice = $button.attr('data-order-invoice') || '';
-			var orderTotal = $button.attr('data-order-total') || '$0.00';
+			var orderTotal = $button.attr('data-payment-total') || $button.attr('data-order-total') || '$0.00';
 			var orderAmount = $button.attr('data-order-amount') || '0';
 
 			$('.js-paynow-modal-title').text('Pay with Paynow');
 			$('.js-paynow-order-number').text(orderNumber);
 			$('.js-paynow-order-total').text(orderTotal);
 			$('#paynow-mobile-number').val('');
+			$('#paynow-method-mobile').prop('checked', true).prop('disabled', false);
+			$('#paynow-method-visa').prop('checked', false).prop('disabled', true);
+			$('.js-visa-availability').text('Checking merchant availability...');
+			$('.js-paynow-mobile-fields').show();
+			$('.js-confirm-paynow').prop('disabled', false).text('Pay with Mobile Money');
 			$('#paynowModal').data({
 				invoice: invoice,
 				orderNumber: orderNumber,
 				orderTotal: orderTotal,
 				orderAmount: orderAmount
 			}).modal('show');
+
+			callCartApi('paynow_gateway.paynow_gateway.api.get_checkout_options', {
+				invoice: invoice
+			}, function(options) {
+				$('#paynow-method-mobile').prop('disabled', !options.mobile_money);
+				$('#paynow-method-visa').prop('disabled', !options.visa_card);
+				$('.js-visa-availability').text(options.visa_card ? 'Secure Paynow hosted checkout' : 'Merchant approval required');
+				if (options.amount !== undefined) {
+					$('#paynowModal').data('orderAmount', options.amount);
+					$('.js-paynow-order-total').text(formatMoney(options.amount));
+				}
+				if (!options.mobile_money && options.visa_card) {
+					$('#paynow-method-visa').prop('checked', true);
+				}
+				$('.js-confirm-paynow').prop('disabled', !options.mobile_money && !options.visa_card);
+				updatePaynowMethodUi();
+			}, function() {
+				$('.js-visa-availability').text('Payment methods could not be checked');
+			});
 		});
 
+		function updatePaynowMethodUi() {
+			var method = $('input[name="paynow-method"]:checked').val() || 'mobile';
+			var isVisa = method === 'visa';
+			$('.js-paynow-mobile-fields').toggle(!isVisa);
+			$('.js-confirm-paynow').text(isVisa ? 'Continue to Paynow' : 'Pay with Mobile Money');
+		}
+
+		$(document).on('change', 'input[name="paynow-method"]', updatePaynowMethodUi);
+
 		$(document).on('click', '.js-confirm-paynow', function() {
+			var method = $('input[name="paynow-method"]:checked').val() || 'mobile';
 			var mobileNumber = $('#paynow-mobile-number').val().trim();
 			var invoice = $('#paynowModal').data('invoice') || '';
 			var orderNumber = $('#paynowModal').data('orderNumber') || 'this order';
@@ -1010,46 +1109,61 @@
 			var orderAmount = $('#paynowModal').data('orderAmount') || '0';
 			var $button = $('.js-confirm-paynow');
 
-			if (!mobileNumber) {
+			if (method === 'mobile' && !mobileNumber) {
 				swal('Mobile number required', 'Please enter your mobile number to pay with Paynow.', 'info');
 				return;
 			}
 
 			swal({
-				title: 'Confirm Paynow payment?',
-				text: 'Pay ' + orderTotal + ' for ' + orderNumber + ' using ' + mobileNumber + '?',
+				title: method === 'visa' ? 'Continue to card checkout?' : 'Confirm mobile money payment?',
+				text: method === 'visa'
+					? 'Continue to Paynow to pay ' + orderTotal + ' for ' + orderNumber + ' by Visa or Mastercard?'
+					: 'Pay ' + orderTotal + ' for ' + orderNumber + ' using ' + mobileNumber + '?',
 				icon: 'warning',
-				buttons: ['Cancel', 'Yes, pay'],
+				buttons: ['Cancel', method === 'visa' ? 'Continue' : 'Yes, pay'],
 				dangerMode: false
 			}).then(function(willPay) {
 				if (!willPay) {
 					return;
 				}
 
-				$button.prop('disabled', true).text('Sending...');
-				callCartApi('paynow_gateway.paynow_gateway.api.process_paynow_payment', {
-					invoice: invoice,
-					phone: mobileNumber,
-					amount: orderAmount
-				}, function(data) {
-					$button.prop('disabled', false).text('Pay with Paynow');
-					$('#paynowModal').modal('hide');
+				$button.prop('disabled', true).text(method === 'visa' ? 'Opening Paynow...' : 'Sending...');
+				callCartApi(
+					method === 'visa'
+						? 'paynow_gateway.paynow_gateway.api.process_paynow_card_payment'
+						: 'paynow_gateway.paynow_gateway.api.process_paynow_payment',
+					method === 'visa'
+						? { invoice: invoice }
+						: { invoice: invoice, phone: mobileNumber, amount: orderAmount },
+					function(data) {
+					$button.prop('disabled', false).text(method === 'visa' ? 'Continue to Paynow' : 'Pay with Mobile Money');
 
 					if (data.status !== 'success') {
-						swal('Paynow error', data.message || 'Could not send payment request.', 'error');
+						swal('Paynow error', data.message || 'Could not start the payment.', 'error');
 						return;
 					}
 
+					if (method === 'visa') {
+						if (!data.redirect_url) {
+							swal('Paynow error', 'Paynow did not return a checkout link.', 'error');
+							return;
+						}
+						storePendingPayment(invoice, orderNumber);
+						window.location.assign(data.redirect_url);
+						return;
+					}
+
+					$('#paynowModal').modal('hide');
 					storePendingPayment(invoice, orderNumber);
 					startPaymentPolling(invoice, orderNumber);
 					swal(
 						'Payment request sent',
-						data.message || 'Check OTP on your mobile to confirm payment.',
+						data.message || 'Check your phone to approve the EcoCash payment.',
 						'success'
 					);
-				}, function() {
-					$button.prop('disabled', false).text('Pay with Paynow');
-					swal('Paynow error', 'Could not send payment request. Please try again.', 'error');
+					}, function() {
+					$button.prop('disabled', false).text(method === 'visa' ? 'Continue to Paynow' : 'Pay with Mobile Money');
+					swal('Paynow error', 'Could not start the payment. Please try again.', 'error');
 				});
 			});
 		});

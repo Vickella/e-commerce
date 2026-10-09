@@ -175,7 +175,8 @@ def get_context(context):
             "status": status,
             "is_paid": flt(invoice.outstanding_amount) <= 0 or status == "Paid",
             "total": money(invoice.grand_total),
-            "amount": flt(invoice.grand_total),
+            "amount": flt(invoice.outstanding_amount),
+            "outstanding_total": money(invoice.outstanding_amount),
             "items_summary": ", ".join(item["item"] for item in items) or "No items",
             "items_json": frappe.as_json(items),
         })
